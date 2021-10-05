@@ -29,12 +29,28 @@
 
 ### Deployment
 
-1. Database - ........
-2. User Interface (webpage) - ease of use, intuitive, interactive.
+1. Database
+
+   - Put engineered data files onto a Postgres database, link it to flask application for later retrieval.
+
+2. User Interface (webpage):
+
+   - Objective: ease of use, intuitive, interactive.
+
+   - bootstrap for UI;
+   - D3.js for interactivity and data visualization, potentially including, not limited to heat maps and word clouds.
+
+### Timeline
+
+- 2 weeks for preprocessing, EDA, and feature extraction/engineering
+
+- 2 weeks for modeling and EDA
+
+- Remaining weeks for deployment, UI, Database setup
 
 ### Duties and Roles
 
-......
+- Duties and roles are flexible and assigned as the project goes
 
 
 

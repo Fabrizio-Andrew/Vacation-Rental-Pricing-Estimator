@@ -84,6 +84,7 @@
         .style("fill", d => popScale(d.properties.price))
         .on("mouseenter", showTooltip)
         .on("mouseleave", hideTooltip)
+        .on("click", ()=>{})
         ;
     }
 
@@ -110,6 +111,7 @@
         // console.log(event);
         // console.log(event.path[0])
         event.path[0].setAttribute("class", "select_neighborhood");
+
         // console.log(feature);
         const tooltip = d3.select("#tooltip")
                 .attr("transform", `translate(${[event.x, event.y]})`)

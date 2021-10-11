@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson-client"></script>
+    <style>
+      .neighborhood {
+        fill: gray;
+        stroke: white;
+        stroke-width: 0.5;
+      }
+      .select_neighborhood{
+        stroke: rgba(244, 107, 2, 0.899);
+        stroke-width: 3;
+      }
+      #tooltip {
+            pointer-events: none;
+        }
+        #tooltip rect {
+            fill: white;
+            fill-opacity: .7;
+            stroke: black;
+            stroke-width: .5;
+        }
+        #tooltip text {
+            font-family: "Yanone Kaffeesatz", sans-serif;
+            font-size: 12px;
+            text-anchor: middle;
+        }
+    </style>
+  </head>
+
+  <body></body>
+
+  <script>
+    const width = 960;
+    const height = 500;
+    const FILE = "neighbourhoods.geojson";
+    const FILE_PRICES = "neighbourhoods_prices.json"
+    const svg = d3
+      .select("body")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    const projection = d3.geoMercator().center([-71.0589,42.32]).scale(100000);
+    const geoPath = d3.geoPath().projection(projection);
+    const map = {};
+    const popScale = d3.scaleSequentialSqrt(d3.interpolateBlues);
+    // Promise.all([
+    //   d3.json("../experimentation/data/"+ FILE)
+    // EachFeature.properties.neighbourhood
+    // EachFeature.properties.price
+    // ])
+    
+    Promise.all([
+      d3.json("../experimentation/data/"+ FILE),
+      d3.json("../experimentation/data/"+ FILE_PRICES),
+    ]).then(function([shapes, prices]) {
+      map.features = shapes.features;
+      map.features.forEach(function(d){
+        // const entry = d.properties.neighbourhood);
+        // console.log(d.properties.neighbourhood);
+        // console.log(prices[d.properties.neighbourhood]);
+        d.properties.price = prices[d.properties.neighbourhood];
+        // console.log(d.properties.price);
+        popScale.domain(d3.extent(map.features, d => d.properties.price))
+      });
+        draw();
+        drawTooltips();
+
+    });
+
+    function draw() {
+      svg
+        .selectAll("path.neighborhood") // CSS styles defined above
+        .data(map.features)
+        .enter()
+        .append("path")
+        .attr("class", "neighborhood")
+        // .attr("id", `${d.properties.neighbourhood}`)
+        .attr("d", geoPath)
+        .style("fill", d => popScale(d.properties.price))
+        .on("mouseenter", showTooltip)
+        .on("mouseleave", hideTooltip)
+        ;
+    }
+
+
+    function  drawTooltips() {
+        svg.append("g").attr("id", "tooltip")
+            .style("opacity", 0)
+            .each(function(d) {
+                d3.select(this).append("rect")
+                        .attr("height", 40)
+                        .attr("width", 150)
+                        .attr("rx", 5).attr("ry", 5)
+                        .attr("x", -75).attr("y", -20)
+                d3.select(this).append("text")
+                        .attr("y", -5)
+                d3.select(this).append("text")
+                        .attr("y", 15);
+            })
+    }
+
+
+    function showTooltip(event,feature) {
+        // const label = labels[colors.indexOf(hdiScale(d.properties.hdi))];
+        // console.log(event);
+        // console.log(event.path[0])
+        event.path[0].setAttribute("class", "select_neighborhood");
+        // console.log(feature);
+        const tooltip = d3.select("#tooltip")
+                .attr("transform", `translate(${[event.x, event.y]})`)
+                .style("opacity", 1);
+        // const neighbourhood_selected = d3.select()
+                // .attr("class",select_neighborhood)
+        tooltip.select("text:first-of-type")
+                .text(feature.properties.neighbourhood);
+        if(feature.properties.price){
+          tooltip.select("text:last-child")
+                .text(`Avg. Price: ${feature.properties.price.toFixed(2)}`);
+        }else{
+          tooltip.select("text:last-child")
+                .text(`Not Enoughs Data`);
+        };
+
+    }
+    
+    function hideTooltip(event, feature) {
+        d3.select("#tooltip").style("opacity", 0)
+        event.path[0].setAttribute("class", "neighborhood");
+    }
+
+
+    
+
+
+  </script>
+</html>

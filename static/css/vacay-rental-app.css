@@ -1,0 +1,38 @@
+html, body {
+    height: 100%;
+}
+
+.sidebar {
+    background: #fff;
+    border-right: 1px solid #e5e5e5;
+    display: block;
+    position: fixed;
+    left: 0;
+    height: 100%;
+    width: 60px;
+    overflow: visible;
+
+}
+    /*
+    //display: flex;
+    //flex-direction: column;
+}
+
+.main-content {
+    //flex: 1;
+}
+*/
+
+.menu-list, .menu-item {
+    margin: auto;
+    text-align: center !important;
+}
+.footer {
+    margin-top: -12px;
+}
+
+@media screen and (max-width: 768px) {
+    #menu-toggle:checked + .nav-menu {
+        display: block;
+    }
+}

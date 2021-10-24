@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <!-- Heroku CI/CD Pipeline Test-->
     <head>
         <title>Vacation Rental Pricing Estimator</title>
         <meta charset="utf-8">
@@ -11,7 +12,6 @@
         <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
         <link rel="stylesheet" href="../static/css/vacay-rental-app.css">
-        <script src="https://kit.fontawesome.com/15181efa86.js" crossorigin="anonymous"></script>
     </head>
     <body class="has-navbar-fixed-top">
         <!-- Top Nav Bar -->
@@ -92,34 +92,118 @@
         <section class="main-content columns is-mobile">
             <!-- Side Menu -->
             <aside class="sidebar">
-                <p class="menu-label is-hidden-touch">Navigation</p>
                 <ul class="menu-list">
                     <li>
-                        <a href="#" class="menu-item">
+                        <a href="#" class="sidebar-item" data-target="secondary-bar">
                             <span class="icon"><i class="fa fa-home"></i></span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="menu-item">
+                        <a href="#" class="sidebar-item">
                             <span class="icon"><i class="fa fa-table"></i></span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="menu-item">
+                        <a href="#" class="sidebar-item">
                             <span class="icon is-small"><i class="fa fa-link"></i></span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="menu-item">
+                        <a href="#" class="sidebar-item">
                             <span class="icon is-small"><i class="fa fa-link"></i></span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="menu-item">
+                        <a href="#" class="sidebar-item">
                             <span class="icon"><i class="fa fa-info"></i></span>
                         </a>
                     </li>
                 </ul>
+            </aside>
+            <!-- Secondary Bar -->
+            <aside class="secondary-bar" id="secondary-bar">
+                <div class="columns is-multiline">
+                    <div class="column is-half">
+                        <div class="field">
+                            <label class="label">Address Line 1</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="field">
+                            <label class="label">Address Line 2</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column is-half">
+                        <div class="field">
+                            <label class="label">City</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <label class="label">State</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <label class="label">ZIP</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <label class="label">Sleeps</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <label class="label">field</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <label class="label">field</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <label class="label">field</label>
+                            <div class="control">
+                                <input class="input" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </aside>
             <!-- Dashboard Content -->
             <div class="container column is-10">
@@ -139,5 +223,7 @@
 
     <footer>
         <script src="../static/js/index.js"></script>
+        <script src="../static/js/burger.js"></script>
+        <script src="https://kit.fontawesome.com/15181efa86.js" crossorigin="anonymous"></script>
     </footer>
 </html>

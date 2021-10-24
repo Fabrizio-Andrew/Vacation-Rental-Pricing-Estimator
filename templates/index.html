@@ -1,17 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
-    <body>
-        <section id="parallax-1" class="hero is-fullheight">
-            <div class="hero-body">
-                <div class="container">
-                    <div class="columns">
-                        <div id="title" class="column is-6">
-                            <h1 class="title is-1">Uh... <h1 id="fifty" class="title is-1">50 bucks?</h1></h1>
-                        </div>
-                    </div>
-                </div>
+    <div class="columns is-mobile is is-multiline">
+        <div class="column is-half">
+            <div class="box dashboard-box">
+                <p>Some cool data goes here</p>
             </div>
-            <div style="height: 1000px; width: 100px; background-color: blue;"></div>
-        </section>
-    </body>
+        </div>
+        <div class="column is-half">
+            <div class="box dashboard-box">
+                <p>Some more cool data goes here</p>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <div class="box dashboard-box">
+                <p>Very</p>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <div class="box dashboard-box">
+                <p>pretty</p>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <div class="box dashboard-box">
+                <p>diagrams</p>
+            </div>
+        </div>
+        <div class="column is-full">
+            <div class="box dashboard-box">
+                <p>Maybe a really big diagram goes here.  Why not?  It's a free country.</p>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

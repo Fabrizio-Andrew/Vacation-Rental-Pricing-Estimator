@@ -129,11 +129,15 @@ def standardize(data):
         standardizeddata['room_type_hotel'] = 0
         standardizeddata['room_type_private'] = 0
     
-    standardizeddata['latitude'] = (data.get('latitude', '') - standards['latitude']['mean']) / standards['latitude']['std']
-    standardizeddata['longitude'] = (data.get('longitude', '') - standards['longitude']['mean']) / standards['longitude']['std']
-    standardizeddata['dist_to_landmark'] = (data.get('dist_to_landmark', '') - standards['dist_to_landmark']['mean']) / standards['dist_to_landmark']['std']
-    standardizeddata['review_scores_rating'] = (data.get('review_scores_rating', '') - standards['review_scores_rating']['mean']) / standards['review_scores_rating']['std']
-    standardizeddata['beds'] = (data.get('beds', '') - standards['beds']['mean']) / standards['beds']['std']
-    standardizeddata['accomodates'] = (data.get('accomodates', '') - standards['accomodates']['mean']) / standards['accomodates']['std']
+    standardizeddata['latitude'] = (float(data.get('latitude', '')) - standards['latitude']['mean']) / standards['latitude']['std']
+    standardizeddata['longitude'] = (float(data.get('longitude', '')) - standards['longitude']['mean']) / standards['longitude']['std']
+    standardizeddata['dist_to_landmark'] = (float(data.get('dist_to_landmark', '')) - standards['dist_to_landmark']['mean']) / standards['dist_to_landmark']['std']
+    standardizeddata['review_scores_rating'] = (float(data.get('review_scores_rating', '')) - standards['review_scores_rating']['mean']) / standards['review_scores_rating']['std']
+    standardizeddata['beds'] = (float(data.get('beds', '')) - standards['beds']['mean']) / standards['beds']['std']
+    standardizeddata['accommodates'] = (float(data.get('accommodates', '')) - standards['accommodates']['mean']) / standards['accommodates']['std']
 
     return standardizeddata
+
+def destandardizePrice(pricez):
+    result = pricez * standards['price']['std'] + standards['price']['mean']
+    return result

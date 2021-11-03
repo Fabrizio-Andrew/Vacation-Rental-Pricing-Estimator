@@ -123,83 +123,83 @@
             <!-- Secondary Bar -->
             <aside class="secondary-bar" id="secondary-bar">
                 <div class="columns is-multiline">
-                    <div class="column is-half">
+                    <div class="column is-one-quarter">
                         <div class="field">
-                            <label class="label">Address Line 1</label>
+                            <label class="label">Lattitude</label>
                             <div class="control">
-                                <input class="input" type="text">
+                                <input class="input" id="lat" type="text">
                             </div>
                         </div>
                     </div>
-                    <div class="column is-half">
+                    <div class="column is-one-quarter">
                         <div class="field">
-                            <label class="label">Address Line 2</label>
+                            <label class="label">Longitude</label>
                             <div class="control">
-                                <input class="input" type="text">
+                                <input class="input" id="long" type="text">
                             </div>
                         </div>
                     </div>
 
                     <div class="column is-half">
                         <div class="field">
-                            <label class="label">City</label>
+                            <label class="label">Distance to landmark</label>
                             <div class="control">
-                                <input class="input" type="text">
+                                <input class="input" id="dist_to_landmark" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="field">
+                            <label class="label">Host Response Time</label>
+                            <div class="control">
+                                <select class="input" id="response_time">
+                                    <option value="hours">Within hours</option>
+                                    <option value="day">Within a day</option>
+                                    <option value="over">Over a few days</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="field">
+                            <label class="label">Room Type</label>
+                            <div class="control">
+                                <select class="input" id="room_type">
+                                    <option value="Hotel">Hotel</option>
+                                    <option value="Private">Private Room</option>
+                                    <option value="Shared">Shared Room</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label class="label">Review Score</label>
+                            <div class="control">
+                                <input class="input" id="review_score" type="number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label class="label">Beds</label>
+                            <div class="control">
+                                <input class="input" id="beds" type="number" maxlength="2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label class="label">Accomodates</label>
+                            <div class="control">
+                                <input class="input" id="accomodates" type="number" maxlength="2">
                             </div>
                         </div>
                     </div>
                     <div class="column is-one-quarter">
                         <div class="field">
-                            <label class="label">State</label>
                             <div class="control">
-                                <input class="input" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                        <div class="field">
-                            <label class="label">ZIP</label>
-                            <div class="control">
-                                <input class="input" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                        <div class="field">
-                            <label class="label">Sleeps</label>
-                            <div class="control">
-                                <input class="input" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                        <div class="field">
-                            <label class="label">field</label>
-                            <div class="control">
-                                <input class="input" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                        <div class="field">
-                            <label class="label">field</label>
-                            <div class="control">
-                                <input class="input" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                        <div class="field">
-                            <label class="label">field</label>
-                            <div class="control">
-                                <input class="input" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column is-one-quarter">
-                        <div class="field">
-                            <div class="control">
-                                <button class="button is-primary">Submit</button>
+                                <button class="button is-primary" id="submit">Submit</button>
                             </div>
                         </div>
                     </div>

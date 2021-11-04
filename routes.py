@@ -1,6 +1,6 @@
 from flask import Flask, request, make_response, render_template
 import json
-from standardization import standardize, destandardizePrice
+from standardization import standardize, destandardizePrice, standards
 from linearmodel import coefs, bias
 from percentile import calculatePercentile
 
@@ -32,12 +32,15 @@ def estimate():
        
         # Create the response object
         responsepayload = {
-            'estimate': estimate,
-            'percentile': percentile,
+            'estimate': round(estimate, 0),
+            'percentile': round(percentile * 100, 0),
             'recommendations': []
         }
+        # Check for recommendations
         if standardizeddata['host_resp_over_few_days'] == 1:
             responsepayload['recommendations'].append('response_time')
+        if standardizeddata['dist_to_landmark'] < standards['dist_to_landmark']['mean']:
+            responsepayload['recommendations'].append('landmark')
 
         response = make_response(responsepayload)
 

@@ -17,8 +17,8 @@
         <!-- Top Nav Bar -->
         <nav class="navbar is-primary is-fixed-top">
             <div class="navbar-brand">
-                <a class="navbar-item" href="https://bulma.io">
-                    <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
+                <a class="navbar-item" href="#">
+                    <h1><strong>Vacation Rental Price Estimator</strong></h1>
                 </a>
                 <div class="navbar-burger" data-target="navbarExampleTransparentExample">
                     <span></span>
@@ -65,26 +65,7 @@
             
                 <div class="navbar-end">
                     <div class="navbar-item">
-                        <div class="field is-grouped">
-                            <p class="control">
-                                <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet" data-social-target="https://bulma.io" target="_blank" href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms">
-                                    <span class="icon">
-                                        <i class="fab fa-twitter"></i>
-                                    </span>
-                                    <span>
-                                        Tweet
-                                    </span>
-                                </a>
-                            </p>
-                            <p class="control">
-                                <a class="button is-primary" href="https://github.com/jgthms/bulma/releases/download/0.9.3/bulma-0.9.3.zip">
-                                    <span class="icon">
-                                        <i class="fas fa-download"></i>
-                                    </span>
-                                    <span>Download</span>
-                                </a>
-                            </p>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -94,8 +75,8 @@
             <aside class="sidebar">
                 <ul class="menu-list">
                     <li>
-                        <a href="#" class="sidebar-item" data-target="secondary-bar">
-                            <span class="icon"><i class="fa fa-home"></i></span>
+                        <a href="#" class="sidebar-item" data-target="estimator-form">
+                            <span class="icon" id="estimator-form-button"><i class="fa fa-home"></i></span>
                         </a>
                     </li>
                     <li>
@@ -121,7 +102,7 @@
                 </ul>
             </aside>
             <!-- Secondary Bar -->
-            <aside class="secondary-bar" id="secondary-bar">
+            <aside class="secondary-bar" id="estimator-form">
                 <div class="columns is-multiline">
                     <div class="column is-one-quarter">
                         <div class="field">
@@ -199,7 +180,7 @@
                     <div class="column is-one-quarter">
                         <div class="field">
                             <div class="control">
-                                <button class="button is-primary" id="submit">Submit</button>
+                                <button class="button is-primary" id="submit" data-target="estimator-form">Submit</button>
                             </div>
                         </div>
                     </div>

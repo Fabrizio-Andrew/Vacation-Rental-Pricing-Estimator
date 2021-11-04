@@ -1,34 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="columns is-mobile is is-multiline">
+    <div class="columns is-mobile" id="placeholder-content">
+        <div class="column">
+            <div class="box dashboard-box">
+                <div class="content is-medium">
+                    <p>Enter property info to generate an estimate.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="columns is-mobile is-multiline" id="dashboard">
         <div class="column is-half">
             <div class="box dashboard-box">
-                <p>Some cool data goes here</p>
+                <div class="content is-medium">
+                    <p>Your price estimate is...</p>
+                    <h1 id="estimate-figure">$212</h1>
+                </div>
             </div>
         </div>
         <div class="column is-half">
             <div class="box dashboard-box">
-                <p>Some more cool data goes here</p>
-            </div>
-        </div>
-        <div class="column is-one-third">
-            <div class="box dashboard-box">
-                <p>Very</p>
-            </div>
-        </div>
-        <div class="column is-one-third">
-            <div class="box dashboard-box">
-                <p>pretty</p>
-            </div>
-        </div>
-        <div class="column is-one-third">
-            <div class="box dashboard-box">
-                <p>diagrams</p>
+                <div class="content is-medium">
+                    <p>Percentile:</p>
+                    <h1 id="percentile-figure">72</h1>
+                    <p><i>(percent of Airbnb rentals priced below yours)</i></p>
+                </div>
             </div>
         </div>
         <div class="column is-full">
-            <div class="box dashboard-box">
-                <p>Maybe a really big diagram goes here.  Why not?  It's a free country.</p>
+            <div class="box dashboard-box" id="opportunities-box">
+                <p>Opportunities:</p>
             </div>
         </div>
     </div>

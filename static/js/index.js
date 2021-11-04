@@ -48,5 +48,8 @@ function submitForm() {
       'accommodates': document.querySelector('#accomodates').value
     })
   })
-  
+  .then(response => response.json())
+  .then(result => {
+    console.log(result)
+  })
 }

@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, make_response, render_template
 import json
 from standardization import standardize, destandardizePrice
 from linearmodel import coefs, bias
+from percentile import calculatePercentile
 
 app = Flask(__name__)
 
@@ -22,12 +23,26 @@ def estimate():
 
         # add the bias
         estimatez = dotproduct + bias
-
+        
         # destandardize the price
         estimate = destandardizePrice(estimatez)
-        
-        print(f'Price is: {estimate}')
-        return str(estimate)
+
+        # Calculate the percentile of the price estimate from z-score
+        percentile = calculatePercentile(estimatez)
+       
+        # Create the response object
+        responsepayload = {
+            'estimate': estimate,
+            'percentile': percentile,
+            'recommendations': []
+        }
+        if standardizeddata['host_resp_over_few_days'] == 1:
+            responsepayload['recommendations'].append('response_time')
+
+        response = make_response(responsepayload)
+
+        print(response)
+        return response
 
 if __name__ == '__main__':
     app.run(debug=True)

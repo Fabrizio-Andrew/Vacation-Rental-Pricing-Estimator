@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  vacationrentalpricingestimator:
+    image: vacationrentalpricingestimator
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+        - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+    ports:
+      - 5000:5000

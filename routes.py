@@ -4,6 +4,9 @@ import json
 from authlib.integrations.flask_client import OAuth
 from functools import wraps
 from six.moves.urllib.parse import urlencode
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+import psycopg2
 
 from standardization import standardize, destandardizePrice, standards
 from linearmodel import coefs, bias
@@ -11,21 +14,26 @@ from percentile import calculatePercentile
 import config
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = config.AUTH0_CLIENT_SECRET
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = False
+app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')
+#app.config['SECRET_KEY'] = app.config.AUTH0_CLIENT_SECRET
+
+db = SQLAlchemy(app)
+
+import models
 
 oauth = OAuth(app)
 
 auth0 = oauth.register(
     'auth0',
-    client_id = config.AUTH0_CLIENT_ID,
-    client_secret = config.AUTH0_CLIENT_SECRET,
-    api_base_url=config.API_BASE_URL,
-    access_token_url=config.AUTH0_ACCESS_TOKEN_URL,
-    authorize_url=config.AUTH0_AUTHORIZE_URL,
-    client_kwargs=config.AUTH0_CLIENT_KWARGS
+    client_id=app.config['AUTH0_CLIENT_ID'],
+    client_secret=app.config['AUTH0_CLIENT_SECRET'],
+    api_base_url=app.config['API_BASE_URL'],
+    access_token_url=app.config['AUTH0_ACCESS_TOKEN_URL'],
+    authorize_url=app.config['AUTH0_AUTHORIZE_URL'],
+    client_kwargs=app.config['AUTH0_CLIENT_KWARGS']
 )
+
+SQL_ENGINE = create_engine(app.config['SQL_URL'])
 
 @app.route('/callback')
 def callback_handling():

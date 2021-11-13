@@ -46,15 +46,39 @@ class DevelopmentConfig(Config):
 
 # Staging configuration settings - relies on Heroku env variables
 class StagingConfig(Config):
+
+    # Authentication Settings
     AUTH0_CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID')
     AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
     APP_URL = 'https://immense-mountain-68865.herokuapp.com'
     AUTH0_CALLBACK_URL = APP_URL + '/callback'
 
+    # DB Settings
+    SQL_URL = engine.URL.create(
+        'postgresql',
+        username=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
+        host=os.environ.get('DB_HOST'),
+        port=os.environ.get('DB_HOST_PORT'),
+        database=os.environ.get('DB_NAME')
+    )
+
 # Production configuration settings - relies on Heroku env variables
 class ProductionConfig(Config):
+
+    # Authentication Settings
     AUTH0_CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID')
     AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
     APP_URL = 'https://vacation-rental-estimator-prod.herokuapp.com'
     AUTH0_CALLBACK_URL = APP_URL + '/callback'
+
+    # DB Settings
+    SQL_URL = engine.URL.create(
+        'postgresql',
+        username=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
+        host=os.environ.get('DB_HOST'),
+        port=os.environ.get('DB_HOST_PORT'),
+        database=os.environ.get('DB_NAME')
+    )
 

@@ -7,3 +7,4 @@ six
 Flask-SQLAlchemy
 Flask-Script
 Flask-Migrate
+psycopg2-binary

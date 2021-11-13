@@ -11,11 +11,9 @@ import psycopg2
 from standardization import standardize, destandardizePrice, standards
 from linearmodel import coefs, bias
 from percentile import calculatePercentile
-import config
 
 app = Flask(__name__)
 app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')
-#app.config['SECRET_KEY'] = app.config.AUTH0_CLIENT_SECRET
 
 db = SQLAlchemy(app)
 

@@ -40,6 +40,7 @@ class Config(object):
     AUTH0_CLIENT_KWARGS = {
         'scope': 'openid profile email'
     }
+    SECRET_KEY = os.environ.get('AUTH0_CLIENT_SECRET')
     SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = False
 

@@ -11,6 +11,7 @@ import psycopg2
 from standardization import standardize, destandardizePrice, standards
 from linearmodel import coefs, bias
 from percentile import calculatePercentile
+import config
 
 app = Flask(__name__)
 app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')
@@ -52,7 +53,7 @@ def callback_handling():
 
 @app.route('/login')
 def login():
-    return auth0.authorize_redirect(redirect_uri=config.AUTH0_CALLBACK_URL)
+    return auth0.authorize_redirect(redirect_uri=app.config['AUTH0_CALLBACK_URL'])
 
 
 @app.route('/logout')

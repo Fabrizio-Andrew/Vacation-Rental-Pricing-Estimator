@@ -1,0 +1,184 @@
+{
+    "Roslindale": {
+        "price": 90.96875,
+        "price_median": 68.5,
+        "price_min": 25.0,
+        "price_max": 250.0,
+        "price_std": 54.61211278556458
+    },
+    "Jamaica Plain": {
+        "price": 176.87719298245614,
+        "price_median": 129.5,
+        "price_min": 29.0,
+        "price_max": 748.0,
+        "price_std": 150.88395238015283
+    },
+    "Mission Hill": {
+        "price": 128.03846153846155,
+        "price_median": 106.5,
+        "price_min": 65.0,
+        "price_max": 300.0,
+        "price_std": 60.38111013834095
+    },
+    "Longwood Medical Area": {
+        "price": null,
+        "price_median": null,
+        "price_min": null,
+        "price_max": null,
+        "price_std": null
+    },
+    "Bay Village": {
+        "price": 169.97142857142856,
+        "price_median": 112.0,
+        "price_min": 57.0,
+        "price_max": 548.0,
+        "price_std": 115.09778086333318
+    },
+    "Leather District": {
+        "price": null,
+        "price_median": null,
+        "price_min": null,
+        "price_max": null,
+        "price_std": null
+    },
+    "Chinatown": {
+        "price": 282.05,
+        "price_median": 280.0,
+        "price_min": 90.0,
+        "price_max": 474.0,
+        "price_std": 101.69172972634915
+    },
+    "North End": {
+        "price": 193.7948717948718,
+        "price_median": 167.0,
+        "price_min": 50.0,
+        "price_max": 545.0,
+        "price_std": 97.23146000711245
+    },
+    "Roxbury": {
+        "price": 139.35135135135135,
+        "price_median": 83.5,
+        "price_min": 27.0,
+        "price_max": 733.0,
+        "price_std": 138.4459355596666
+    },
+    "South End": {
+        "price": 179.43410852713177,
+        "price_median": 139.0,
+        "price_min": 75.0,
+        "price_max": 890.0,
+        "price_std": 117.86557789498755
+    },
+    "Back Bay": {
+        "price": 220.94495412844037,
+        "price_median": 175.0,
+        "price_min": 0.0,
+        "price_max": 1000.0,
+        "price_std": 140.64466882118907
+    },
+    "East Boston": {
+        "price": 139.8235294117647,
+        "price_median": 115.0,
+        "price_min": 28.0,
+        "price_max": 314.0,
+        "price_std": 74.29448746944378
+    },
+    "Charlestown": {
+        "price": 215.32692307692307,
+        "price_median": 199.5,
+        "price_min": 45.0,
+        "price_max": 686.0,
+        "price_std": 128.32751010274626
+    },
+    "West End": {
+        "price": 239.3125,
+        "price_median": 267.0,
+        "price_min": 99.0,
+        "price_max": 430.0,
+        "price_std": 92.23066644740963
+    },
+    "Beacon Hill": {
+        "price": 198.54666666666665,
+        "price_median": 140.0,
+        "price_min": 60.0,
+        "price_max": 842.0,
+        "price_std": 141.45606646142377
+    },
+    "Downtown": {
+        "price": 231.60106382978722,
+        "price_median": 191.5,
+        "price_min": 76.0,
+        "price_max": 950.0,
+        "price_std": 138.14324658267708
+    },
+    "Fenway": {
+        "price": 235.23728813559322,
+        "price_median": 185.0,
+        "price_min": 0.0,
+        "price_max": 991.0,
+        "price_std": 185.5894002419701
+    },
+    "Brighton": {
+        "price": 112.30232558139535,
+        "price_median": 83.0,
+        "price_min": 35.0,
+        "price_max": 617.0,
+        "price_std": 89.31649867580185
+    },
+    "West Roxbury": {
+        "price": 108.61111111111111,
+        "price_median": 90.0,
+        "price_min": 44.0,
+        "price_max": 298.0,
+        "price_std": 71.74721875231687
+    },
+    "Hyde Park": {
+        "price": 86.44,
+        "price_median": 72.0,
+        "price_min": 28.0,
+        "price_max": 249.0,
+        "price_std": 54.549732660512035
+    },
+    "Mattapan": {
+        "price": 88.57142857142857,
+        "price_median": 62.0,
+        "price_min": 25.0,
+        "price_max": 375.0,
+        "price_std": 84.61259365656512
+    },
+    "Dorchester": {
+        "price": 127.40182648401826,
+        "price_median": 80.0,
+        "price_min": 28.0,
+        "price_max": 682.0,
+        "price_std": 122.33655336908359
+    },
+    "South Boston Waterfront": {
+        "price": 262.4117647058824,
+        "price_median": 154.0,
+        "price_min": 120.0,
+        "price_max": 699.0,
+        "price_std": 196.9987496227861
+    },
+    "South Boston": {
+        "price": 181.09195402298852,
+        "price_median": 120.0,
+        "price_min": 30.0,
+        "price_max": 800.0,
+        "price_std": 144.96395960952597
+    },
+    "Allston": {
+        "price": 164.03076923076924,
+        "price_median": 158.0,
+        "price_min": 30.0,
+        "price_max": 600.0,
+        "price_std": 130.1349022686133
+    },
+    "Harbor Islands": {
+        "price": null,
+        "price_median": null,
+        "price_min": null,
+        "price_max": null,
+        "price_std": null
+    }
+}

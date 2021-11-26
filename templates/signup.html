@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<section id="" style="height:700px" class="bg-white text-dark p-4 mt-5 text-center p-lg-0 p-md-0">
+<!-- post the form to a route, if correct password, route to page   -->
+<div class="container" >
+  <div class="row">
+    <div class="col-md-4"></div>
+<div class="col-md-4">
+    <form id="signup" name="signup" action="/signup" method="POST">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+       <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+       {% if message %}
+            {{ message | safe }} 
+       {% endif %}
+      <div class="form-floating">
+        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <label for="floatingInput">Email address</label>
+      </div>
+
+      <div class="form-floating ">
+        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <label for="floatingPassword">Password</label>
+      </div>
+
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
+    </form>
+  </div>
+
+  <div class="col-md-4"></div>
+
+</div>
+</div>
+  </section>
+  
+{% endblock %}

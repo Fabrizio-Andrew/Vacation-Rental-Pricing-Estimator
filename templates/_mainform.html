@@ -1,0 +1,180 @@
+
+<!-- main form -->
+<section id="mainform" class="bg-white text-light p-5 ">
+    <form action="/processForm" method="post">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-md mb-0">
+                <h3 class="text-dark text-start mb-3">Property Info</h3>
+                <!-- Address -->
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="AutoAddress" required autocomplete="off"
+                        id="AutoAddress" placeholder="333 North St">
+                    <label for="AutoAddress" class="text-secondary">Address</label>
+
+                </div>
+                <!-- room type -->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="RoomType">
+                        <option selected value="0">Private room</option>
+                        <option value="1">Hotel Room</option>
+                        <option value="2">Shared Room</option>
+                        <option value="3">Entire Home/Apt</option>
+                    </select>
+                    <label for="RoomType" class="text-dark">Select Room Type</label>
+                </div>
+                <!-- # of beds -->
+                <div class="text-center">
+                    <input type="range" class="form-range" min="0" max="8" id="Beds" value="1" oninput="updateBeds();">
+                    <label for="Beds" class="form-label text-dark">Number of Beds: </label>
+                    <span id="BedsSpan" class="text-primary">1</span>
+                </div>
+                <!-- Accommodates -->
+                <div class="text-center">
+                    <input type="range" class="form-range" min="1" max="15" id="Accommodates" value="2"
+                        oninput="updateAccommodates();">
+                    <label for="Accommodates" class="form-label text-dark">Accommodates </label>
+                    <span id="AccommodatesSpan" class="text-primary">0</span>
+                </div>
+            </div>
+
+
+            <div class="col-md mb-0">
+                <h3 class="text-dark text-start mb-3">Host and Reviews Info</h3>
+                <!-- Host Response Time -->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="HostResponseTime">
+                        <option selected value="0">Within an Hour</option>
+                        <option value="1">Within a few Hours</option>
+                        <option value="2">Within a Day</option>
+                        <option value="3">A Few Days or More</option>
+                    </select>
+                    <label for="HostResponseTime" class="text-dark">Host Response Time</label>
+                </div>
+                <!-- Review Score -->
+                <div class="text-center">
+                    <input type="range" class="form-range" min="3" max="5" id="ReviewScore" step="0.01" value="5"
+                        oninput="updateReviewScore();">
+                    <label for="ReviewScore" class="form-label text-dark">Overall Review Score: </label>
+                    <span id="ReviewScoreSpan" class="text-primary">0</span>
+                </div>
+
+                <!--  Longitude -->
+                <div class="form-floating mb-3" hidden>
+                    <input type="number" class="form-control" name="Longitude" required autocomplete="off"
+                        id="Longitude" placeholder="Longitude" value="0" disabled>
+                    <label for="Longitude" class="text-secondary">Longitude</label>
+                </div>
+                <!-- Latitude -->
+                <div class="form-floating mb-3" hidden>
+                    <input type="number" class="form-control" name="Latitude" required autocomplete="off" id="Latitude"
+                        placeholder="Latitude" value="0" disabled>
+                    <label for="Latitude" class="text-secondary">Latitude</label>
+                </div>
+                <div>
+                    <button class="btn btn-danger btn-lg" style="width:100%;" type="submit">Submit</button>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- <div>
+                <button class="btn btn-danger btn-lg" style="width:100%;" type="submit">Submit</button>
+            </div> -->
+
+    </div>
+</form>
+</section>
+
+<!-- for geojson? -->
+<script src="/static/js/topojson.js"></script>
+<script src="/static/js/jquery-3.6.0.min.js"></script>
+
+<!-- Google Places API has been restricted to Specified Heroku app url -->
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3ufBrDDLSZUlA7LZfQcOGcUvlgL9KeUE&callback=initAutocomplete&libraries=places&v=weekly">
+</script>
+
+<!-- Google Places Autocomplete -->
+<script>
+    let autocomplete;
+    let address1Field;
+
+    function initAutocomplete() {
+        console.log('initAutocomplete');
+        address1Field = document.querySelector("#AutoAddress");
+        var input = document.getElementById('AutoAddress');
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: {
+                country: ["us"],
+            },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        autocomplete.addListener('place_changed', fillInAutoComplete);
+    }
+
+    function fillInAutoComplete() {
+        const place = autocomplete.getPlace();
+        const longitude = document.getElementById('Longitude');
+        const latitude = document.getElementById('Latitude');
+        console.log(place);
+        console.log(place.geometry.location.lng());
+        longitude.value = place.geometry.location.lng();
+        latitude.value = place.geometry.location.lat();
+        console.log(place.geometry.location.lat());
+        for (const component of place.address_components) {
+            const componentType = component.types[0];
+
+            switch (componentType) {
+                case "locality":
+                    if (component.long_name != "Boston") {
+                        console.log("not Boston");
+                        // document.getElementById("AutoAddress").value = "Boston";
+                    }
+                    break;
+                case "country":
+                    if (component.long_name != "United States") {
+                        console.log("not US");
+                        // document.getElementById("AutoAddress").value = "Boston";
+                    }
+                    break;
+            }
+        }
+    }
+
+    updateBeds();
+    updateReviewScore();
+
+    function updateBeds() {
+        var beds = document.getElementById('Beds');
+        var bedsSpan = document.getElementById('BedsSpan');
+        var bedsValue = beds.value;
+        bedsSpan.innerHTML = bedsValue;
+        updateAccommodates(bedsValue * 2);
+    }
+
+    function updateAccommodates(num) {
+        var acc = document.getElementById('Accommodates');
+        var accSpan = document.getElementById('AccommodatesSpan');
+        var accValue;
+        if (!num) {
+            accValue = acc.value;
+        } else {
+            accValue = num;
+            acc.value = num;
+        }
+        if (accValue == 1) {
+            accSpan.innerHTML = accValue + " Guest";
+        } else {
+            accSpan.innerHTML = accValue + " Guests";
+        }
+    }
+
+    function updateReviewScore() {
+        var score = document.getElementById('ReviewScore');
+        var scoreSpan = document.getElementById('ReviewScoreSpan');
+        var scoreValue = score.value;
+        scoreSpan.innerHTML = scoreValue;
+    }
+</script>

@@ -1,0 +1,150 @@
+@media(max-width: 1024px) {
+
+    #svg_index {
+        transform: scale(1.2) translateX(12%);
+    }
+
+    /* #svg_results{
+        
+    } */
+}
+
+@media(min-width: 1024px) {
+    #svg_index {
+        transform: scale(1.5) translateX(0%);
+    }
+}
+
+@media(min-width: 768px) {
+    #submitDiv {
+        position: relative;
+        bottom: -20%;
+        /* color:rgb(48, 147, 5) */
+    }
+}
+
+/* .svg1{
+    .attr("transform", "scale(1.5)");
+} */
+
+/* #submitDiv{
+    position: relative;
+    bottom: -20%;
+} */
+
+#svg_no_transform {
+    /* transform: none;  */
+    /* transform: translateX(-20%); */
+}
+
+body::before {
+    display: block;
+    content: "";
+    height: 60px;
+}
+
+section .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    float: none;
+}
+
+/* body { 
+	max-width: 1080px; 
+	margin: 0 auto;
+	float: none;
+} */
+
+#map {
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}
+
+#logo {
+    font-size: 20rem;
+    color: rgba(211, 47, 47, 0.872);
+    margin-top: -150px;
+}
+
+fullpage {
+    height: 800px;
+}
+
+.landmark circle {
+    fill: rgb(255, 247, 0);
+    stroke: rgb(252, 189, 189);
+}
+
+.landmarktext {
+    font: bold sans-serif;
+    fill: rgb(255, 0, 0);
+}
+
+.subway circle {
+    fill: rgba(255, 132, 0, 0.844);
+    stroke: rgb(255, 132, 0);
+    stroke-width: 1px;
+
+}
+
+.user circle {
+    fill: rgba(227, 28, 74, 0.68);
+    stroke: rgba(249, 17, 17, 0.708);
+}
+
+.usertext {
+    font: bold 25px sans-serif;
+    fill: rgba(238, 66, 66, 0.728);
+}
+
+
+mark.mark1 {
+    background-color: rgba(230, 67, 138, 0.947);
+    color: rgb(255, 255, 255);
+    /* padding: 0.5rem; */
+    border-radius: 5px;
+}
+
+mark.mark2 {
+    background-color: rgba(244, 145, 39, 0.719);
+    color: rgb(255, 255, 255);
+    /* padding: 0.5rem; */
+    border-radius: 5px;
+}
+
+mark.mark3 {
+    background-color: rgba(39, 148, 244, 0.808);
+    color: rgb(255, 255, 255);
+    /* padding: 0.5rem; */
+    border-radius: 5px;
+}
+
+.neighborhood {
+    fill: gray;
+    stroke: white;
+    stroke-width: 0.5;
+}
+
+.select_neighborhood {
+    stroke: rgba(244, 107, 2, 0.899);
+    stroke-width: 3;
+}
+
+#tooltip {
+    pointer-events: none;
+}
+
+#tooltip rect {
+    fill: white;
+    fill-opacity: .7;
+    stroke: black;
+    stroke-width: .5;
+}
+
+#tooltip text {
+    font-family: "Yanone Kaffeesatz", sans-serif;
+    font-size: 12px;
+    text-anchor: middle;
+}
+

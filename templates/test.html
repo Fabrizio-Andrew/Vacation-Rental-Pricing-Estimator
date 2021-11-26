@@ -1,0 +1,41 @@
+
+<form id="address-form" action="" method="get" autocomplete="off">
+
+    <label class="full-field">
+      <span class="form-label">Type Adress</span>
+      <input
+        id="ship-address"
+        name="ship-address"
+        required
+        autocomplete="off"
+      />
+    </label>
+    <input type="text" class="form-control" id="long"/>
+    </form>
+
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3ufBrDDLSZUlA7LZfQcOGcUvlgL9KeUE&callback=initAutocomplete&libraries=places&v=weekly"></script>
+<script>
+    let autocomplete;
+    let address1Field;
+    let long;
+    function initAutocomplete() {
+        console.log('initAutocomplete');
+        address1Field = document.querySelector("#ship-address");
+        var input = document.getElementById('ship-address');
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        autocomplete.addListener('place_changed', fillInAutoComplete);
+    }
+
+    function fillInAutoComplete() {
+        const place = autocomplete.getPlace();
+        console.log(place);
+        console.log(place.geometry.location.lng());
+        console.log(place.geometry.location.l());
+    }
+
+    </script>

@@ -1,36 +1,368 @@
 {% extends "layout.html" %}
+
 {% block content %}
-    <div class="columns is-mobile" id="placeholder-content">
-        <div class="column">
-            <div class="box dashboard-box">
-                <div class="content is-medium">
-                    <p>Enter property info to generate an estimate.</p>
+<!-- showcase -->
+<section id="showcase" class="bg-light text-dark p-4 text-center p-lg-0 p-md-0">
+    <!-- text-sm-start -->
+    <div class="container p-3">
+        <div class="row ">
+            <div class="d-sm-flex col-lg-6 align-items-center justify-content-between">
+                <div>
+                    <h1 class="mb-4">Vacation Rental <span class="text-warning">Pricing Helper</span></h1>
+                    <p class="lead ">
+                        This is a great tool to help <b class="">property owners</b> to <mark class="">calculate the
+                            pricing</mark> of a
+                        vacation rental in the Boston, Massachusetts area, with <mark class="mark1"><i>critical
+                                insights!</i></mark>
+                    </p>
+                    <a class="btn btn-outline-danger btn-lg" href="#mainform">
+                        Let's Get Started!
+                    </a>
+                </div>
+                <!-- <img src="/static/img/house-door.svg" class="img-fluid w-100 d-none d-sm-block" alt="" /> -->
+
+            </div>
+
+            <!-- <div class="col-md-6 d-none d-sm-block">
+                <i id="logo" class="bi bi-house-door"></i>
+            </div> -->
+            <!-- <div class="shadow bg-white rounded col-lg mb-0 d-none d-sm-block"> -->
+            <div class="rounded col-lg mb-0 d-none d-sm-block">
+                <div id="HeatMap" class="justify-content-between">
+                    <!-- border border-danger -->
                 </div>
             </div>
         </div>
     </div>
-    <div class="columns is-mobile is-multiline" id="dashboard">
-        <div class="column is-half">
-            <div class="box dashboard-box">
-                <div class="content is-medium">
-                    <p>Your price estimate is...</p>
-                    <h1 id="estimate-figure">$212</h1>
+</section>
+
+
+<!-- D3Js map -->
+<script>
+    // const width = '100%';
+    const height = '500px';
+    const FILE = "neighbourhoods.geojson";
+    // const FILE_PRICES = "neighbourhoods_prices.json"
+    const FILE_PRICES = "neighbourhoods_prices_plus.json"
+    const svg = d3
+        .select("#HeatMap")
+        .append("svg")
+        .attr("class", "w-100")
+        .attr("height", height)
+        .attr("id", "svg_index")
+        // .attr("transform", "scale(1.5)");
+
+    // const projection = d3.geoMercator().center([-71.0589,42.32]).scale(100000);
+    const projection = d3.geoMercator().center([-70.9289, 42.32]).scale(100000);
+    const geoPath = d3.geoPath().projection(projection);
+    const map = {};
+    const popScale = d3.scaleSequentialSqrt(d3.interpolateBlues);
+    // Promise.all([
+    //   d3.json("../experimentation/data/"+ FILE)
+    // EachFeature.properties.neighbourhood
+    // EachFeature.properties.price
+    // ])
+
+    Promise.all([
+        d3.json("/data/" + FILE),
+        d3.json("/data/" + FILE_PRICES),
+    ]).then(function ([shapes, prices]) {
+        map.features = shapes.features;
+        map.features.forEach(function (d) {
+            // const entry = d.properties.neighbourhood);
+            // console.log(d.properties.neighbourhood);
+            // console.log(prices[d.properties.neighbourhood]);
+            d.properties.price = prices[d.properties.neighbourhood].price;
+            d.properties.price_median = prices[d.properties.neighbourhood].price_median
+            d.properties.price_min = prices[d.properties.neighbourhood].price_min
+            d.properties.price_max = prices[d.properties.neighbourhood].price_max
+            d.properties.price_std = prices[d.properties.neighbourhood].price_std
+
+            // console.log(d.properties.price);
+            popScale.domain(d3.extent(map.features, d => d.properties.price))
+        });
+        draw();
+        drawTooltips2();
+
+
+    });
+
+    function draw() {
+        svg
+            .selectAll("path.neighborhood") // CSS styles defined above
+            .data(map.features)
+            .enter()
+            .append("path")
+            .attr("class", "neighborhood")
+            // .attr("id", `${d.properties.neighbourhood}`)
+            .attr("d", geoPath)
+            .style("fill", d => popScale(d.properties.price))
+            .on("mouseenter", showTooltip2)
+            .on("mouseleave", hideTooltip)
+        // .on("touchstart", showTooltip2)
+        // .on("touchend", hideTooltip)
+        // .on("click", ()=>{})
+        ;
+    }
+
+    function drawTooltips2() {
+        d3.select("#HeatMap")
+            .append('div')
+            .attr("id", "tooltip")
+            .attr("class", "border border-warning bg-white p-2")
+            .style("opacity", 0)
+            .style("background-color", 'red')
+            .style("position", 'fixed')
+            .html("placeholder");
+    }
+
+    // NeighborhoodInfo
+    function showTooltip2(event, feature) {
+        // console.log(event);
+        // console.log(feature);
+        event.path[0].setAttribute("class", "select_neighborhood");
+        // const tooltip = d3.select("#tooltip")
+        var tooltip = document.getElementById("tooltip");
+        tooltip.style.left = event.clientX + 'px';
+        tooltip.style.top = event.clientY + 'px';
+        tooltip.style.opacity = 1;
+
+        tooltip.innerHTML =
+            `<h5 class="text-danger text-center">${feature.properties.neighbourhood}</h5>
+        <p class="text-dark text-start">
+            <mark>Mean Price:</mark> ${feature.properties.price? '$'+feature.properties.price.toFixed(2):"Data Unavailable"}<br>
+            <mark>Median Price:</mark> ${feature.properties.price_median? '$'+feature.properties.price_median.toFixed(2):"Data Unavailable"}<br>
+            <mark>Min Price:</mark> ${feature.properties.price_min? '$'+feature.properties.price_min.toFixed(2):"Data Unavailable"}<br>
+            <mark>Max Price:</mark> ${feature.properties.price_max? '$'+feature.properties.price_max.toFixed(2):"Data Unavailable"}<br>
+            <mark>Price STDEV:</mark> ${feature.properties.price_std? '$'+feature.properties.price_std.toFixed(2):"Data Unavailable"}<br>
+            
+            </p>`;
+
+    }
+
+
+
+    function hideTooltip(event, feature) {
+        d3.select("#tooltip").style("opacity", 0)
+        event.path[0].setAttribute("class", "neighborhood");
+    }
+</script>
+<script src="/static/js/topojson.js"></script>
+<script src="/static/js/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+
+
+{% block mainform %}
+<!-- main form -->
+<section id="mainform" class="bg-white text-light p-5 ">
+    <form id="formid" action="/results_page" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-md mb-0">
+                <h3 class="text-dark text-start mb-3">Property Info</h3>
+                <!-- Address -->
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="AutoAddress" required autocomplete="off"
+                        id="AutoAddress" placeholder="333 North St">
+                    <label for="AutoAddress" class="text-secondary">Address</label>
+
+                </div>
+                <!-- room type -->
+                <div class="form-floating mb-3">
+                    <select class="form-select" name="RoomType" id="RoomType">
+                        <option selected value="0">Private room</option>
+                        <option value="1">Hotel Room</option>
+                        <option value="2">Shared Room</option>
+                        <option value="3">Entire Home/Apt</option>
+                    </select>
+                    <label for="RoomType" class="text-dark">Select Room Type</label>
+                </div>
+                <!-- # of beds -->
+                <div class="text-center">
+                    <input type="range"  name="Beds" class="form-range" min="0" max="8" id="Beds" value="1" oninput="updateBeds();">
+                    <label for="Beds" class="form-label text-dark">Number of Beds: </label>
+                    <span id="BedsSpan" class="text-primary">1</span>
+                </div>
+                <!-- Accommodates -->
+                <div class="text-center">
+                    <input type="range" name="Accommodates" class="form-range" min="1" max="15" id="Accommodates" value="2"
+                        oninput="updateAccommodates();">
+                    <label for="Accommodates" class="form-label text-dark">Accommodates </label>
+                    <span id="AccommodatesSpan" class="text-primary">0</span>
+                </div>
+            </div>
+
+
+            <div class="col-md mb-0">
+                <h3 class="text-dark text-start mb-3">Host and Reviews Info</h3>
+                <!-- Host Response Time -->
+                <div class="form-floating mb-3">
+                    <select class="form-select" name="HostResponseTime" id="HostResponseTime">
+                        <option selected value="0">Within an Hour</option>
+                        <option value="1">Within a few Hours</option>
+                        <option value="2">Within a Day</option>
+                        <option value="3">A Few Days or More</option>
+                    </select>
+                    <label for="HostResponseTime" class="text-dark">Host Response Time</label>
+                </div>
+                <!-- Review Score -->
+                <div class="text-center">
+                    <input type="range" class="form-range" name="ReviewScore" min="3" max="5" id="ReviewScore" step="0.01" value="5"
+                        oninput="updateReviewScore();">
+                    <label for="ReviewScore" class="form-label text-dark">Overall Review Score: </label>
+                    <span id="ReviewScoreSpan" class="text-primary">0</span>
+                </div>
+
+                <!--  Longitude -->
+                <div class="form-floating mb-3 d-none">
+                    <input type="number" class="form-control" name="Longitude" autocomplete="off"
+                        id="Longitude" placeholder="Longitude" value="0" readonly>
+                    <label for="Longitude" class="text-secondary">Longitude</label>
+                </div>
+                <!-- Latitude -->
+                <div class="form-floating mb-3 d-none">
+                    <input type="number" class="form-control" name="Latitude" autocomplete="off" id="Latitude"
+                        placeholder="Latitude" value="0" readonly>
+                    <label for="Latitude" class="text-secondary">Latitude</label>
+                </div>
+                <div class="form-floating mb-3 d-none">
+                    <input type="number" class="form-control" name="place_id" autocomplete="off" id="place_id"
+                        placeholder="place_id" value="0" readonly>
+                    <label for="place_id" class="text-secondary">place_id</label>
+                </div>
+                <div id="submitDiv">
+                    <button id="submitButton" class="btn btn-danger btn-lg" style="width:100%;" type="submit">Submit</button>
                 </div>
             </div>
         </div>
-        <div class="column is-half">
-            <div class="box dashboard-box">
-                <div class="content is-medium">
-                    <p>Percentile:</p>
-                    <h1 id="percentile-figure">72</h1>
-                    <p><i>(percent of Airbnb rentals priced below yours)</i></p>
-                </div>
-            </div>
-        </div>
-        <div class="column is-full">
-            <div class="box dashboard-box" id="opportunities-box">
-                <p>Opportunities:</p>
-            </div>
-        </div>
+        <!-- <div>
+                <button class="btn btn-danger btn-lg" style="width:100%;" type="submit">Submit</button>
+            </div> -->
+
     </div>
-{% endblock content %}
+    </form>
+</section>
+
+<!-- for geojson? -->
+
+<!-- Google Places API has been restricted to Specified Heroku app url -->
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3ufBrDDLSZUlA7LZfQcOGcUvlgL9KeUE&callback=initAutocomplete&libraries=places&v=weekly">
+</script>
+
+<!-- Google Places Autocomplete -->
+<script>
+    let autocomplete;
+    let address1Field;
+    let locality_boston = false;
+    function initAutocomplete() {
+        // console.log('initAutocomplete');
+        address1Field = document.querySelector("#AutoAddress");
+        var input = document.getElementById('AutoAddress');
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: {
+                country: ["us"],
+            },
+            fields: ["address_components", "geometry"], //"place_id"],
+            types: ["address"],
+        });
+        autocomplete.addListener('place_changed', fillInAutoComplete);
+    }
+
+    function fillInAutoComplete() {
+        const place = autocomplete.getPlace();
+        const longitude = document.getElementById('Longitude');
+        const latitude = document.getElementById('Latitude');
+        const place_id = document.getElementById('place_id');
+        console.log(place);
+        console.log(place.geometry.location.lng());
+        longitude.value = place.geometry.location.lng();
+        latitude.value = place.geometry.location.lat();
+        place_id.value = place.place_id;
+        console.log(place.geometry.location.lat());
+        for (const component of place.address_components) {
+            const componentType = component.types[0];
+
+            switch (componentType) {
+                case "locality":
+                    if (component.long_name == "Boston") {
+                        locality_boston = true;
+                        // document.getElementById("AutoAddress").value = "Boston";
+                    }else{
+                        locality_boston = false;
+                    }
+                    break;
+                case "country":
+                    if (component.long_name != "United States") {
+                        console.log("not US");
+                        // document.getElementById("AutoAddress").value = "Boston";
+                    }
+                    break;
+            }
+        }
+    }
+
+    updateBeds();
+    updateReviewScore();
+
+    function updateBeds() {
+        var beds = document.getElementById('Beds');
+        var bedsSpan = document.getElementById('BedsSpan');
+        var bedsValue = beds.value;
+        bedsSpan.innerHTML = bedsValue;
+        updateAccommodates(bedsValue * 2);
+    }
+
+    function updateAccommodates(num) {
+        var acc = document.getElementById('Accommodates');
+        var accSpan = document.getElementById('AccommodatesSpan');
+        var accValue;
+        if (!num) {
+            accValue = acc.value;
+        } else {
+            accValue = num;
+            acc.value = num;
+        }
+        if (accValue == 1) {
+            accSpan.innerHTML = accValue + " Guest";
+        } else {
+            accSpan.innerHTML = accValue + " Guests";
+        }
+    }
+
+    function updateReviewScore() {
+        var score = document.getElementById('ReviewScore');
+        var scoreSpan = document.getElementById('ReviewScoreSpan');
+        var scoreValue = score.value;
+        scoreSpan.innerHTML = scoreValue;
+    }
+
+    $(window).ready(function() {
+        $("#AutoAddress").on("keypress", function (event) {
+            var keyPressed = event.keyCode || event.which;
+            if (keyPressed === 13) {
+                event.preventDefault();
+                const place = autocomplete.getPlace();
+                const longitude = document.getElementById('Longitude');
+                const latitude = document.getElementById('Latitude');
+                longitude.value = place.geometry.location.lng();
+                latitude.value = place.geometry.location.lat();
+                return false;
+            }
+        });
+        $("#submitButton").on("click", function (event) {
+            event.preventDefault();
+            // check if address is in boston or valid long/lats
+            if(locality_boston){
+                $("#formid").submit();
+            }else{
+                alert("Please enter a valid address in Boston");
+            }
+
+        });
+    });
+
+</script>
+{% endblock %}

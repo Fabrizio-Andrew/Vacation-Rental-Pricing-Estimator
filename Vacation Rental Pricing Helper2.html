@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>Vacation Rental Pricing Helper</title>
+</head>
+<body><p><strong>Course Name: </strong>CSCIE-14a: Building Interactive Web Applications
+for Data Analysis</p>
+<p><strong>Instructor:</strong> Zona Kostic</p>
+<p><strong>TA</strong>: Gabe Korodi</p>
+<p><strong>Group Assignment:</strong> PWA - Price Prediction</p>
+<p><strong>Members</strong>: Andrew Fabrizio, Joe Pursel, Jing Yu</p>
+<h2 id='vacation-rental-pricing-helper'>Vacation Rental Pricing Helper</h2>
+<p>Property owners renting out on a short-term basis (hosts) often have little experience in the real estate or hospitality industries and lack the ability to accurately predict the fair market value of their short term rental. AirBnB offers a pricing estimator, but it can often be inaccurate.</p>
+<p>The Vacation Rental Pricing Helper will provide hosts with a baseline prediction of the fair market value of their short-term rental based on location, property features, date, and any other predictors that the team finds to be meaningful. In addition, hosts will be provided with key data insights from listings data, alongside processed natural language insights. Armed with such information, hosts will be better prepared to accurately price their short-term rentals.</p>
+<h3 id='app-overview'>App Overview</h3>
+<p>On the homepage, user is greeted with a basic header, consisting of a short description and a pricing heat map, to inform the user of the purpose of the site. Once the user is engaged, they can fill out a basic form (designed such that as little effort as possible is required to complete) of their property information.</p>
+<p>After submission of the form, the user is taken to a results page. On that page, user would see a zoomed in map, in which the property location, nearest subways, and nearest landmarks are displayed and labeled. In addition, user sees an overview of their submission and the predicted pricing for their property. For the pricing, the page shows an interactive chart that tells exactly which factor contributes in what dollar amounts to the final pricing.</p>
+<p>On the insights page, user can explore the dataset at will with a range of filters. User is presented with a number of charts and data insights.</p>
+<h2 id='app-features'>App Features</h2>
+<h3 id='interface'>Interface</h3>
+<p>- Bootstrap CSS/JS</p>
+<p>- Html, jQuery, Javascript</p>
+<p>- Responsive design</p>
+<p>- D3.JS for interative components, visualizations, data processing, and DOM manipulations</p>
+<p>- Plot.ly for interactive plots, handoff from D3</p>
+<p>- Chart.js for just one chart</p>
+<p>- Google Places API for geocoding (api restricted by domain)</p>
+<p>- User experience design with simplified form</p>
+<h3 id='user-management'>User Management</h3>
+<p>- Sign up and login</p>
+<p>- Sha256 password hashing and storage in postgres data table</p>
+<p>- Sha256 login authentication</p>
+<p>- Signup password field strength checking; email field validity checking</p>
+<p>- User dashboard not implemented due to lack of useful features to implement user-wise; but could be easily implemented with the infrastructure in place</p>
+<h3 id='security'>Security</h3>
+<p>- CRSF protection is enabled.</p>
+<p>- Cookies protection</p>
+<p>- SQL Query Injection protection (under development)</p>
+<h3 id='pwa'>PWA</h3>
+<p>- Offline Loading, <strong>Service Worker,</strong> Caching of Resources</p>
+<p>- Icons of various sizes specified in <strong>manifest.json</strong></p>
+<p>- Desktop chrome installable (Chrome, tested working)</p>
+<p>- IOS homescreen installable (Safari, tested working)</p>
+<p>- Android homescreen installable (Chrome, tested working)</p>
+<p><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/image-20211126075854995.png" alt="image-20211126075854995" style="zoom:50%;" /><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/image-20211126075934797.png" alt="image-20211126075934797" style="zoom: 50%;" /></p>
+<h3 id='database'>Database</h3>
+<p>- Postgres database for storage and retrieval</p>
+<p>- Pandas SQL Queries for python processing</p>
+<p>- Sqlalchemy for ORM</p>
+<p><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/image-20211126073011431.png" referrerpolicy="no-referrer" alt="image-20211126073011431"></p>
+<h3 id='insights-page'>Insights Page</h3>
+<p>- Designed to allow users to see reports for data of choosing</p>
+<p>- Filters by neighborhood, super host status, response rate, host experience in years</p>
+<p>- Aggregate Stats: mean price, median price, standard deviation, average rating</p>
+<p>- Violin plot by neighborhoods</p>
+<p>- Room Types and Price Violin Plots; Room Types Pie Chart</p>
+<p>-  Various Review Scores Radar Plot</p>
+<p>- Accommodates by Count and vs Price</p>
+<p>- Host # of Years by Count and vs Price</p>
+<p>&nbsp;</p>
+<h3 id='natural-language-processing'>Natural Language Processing</h3>
+<p>- <a href='https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/VacationNLP.ipynb'>Download Notebook</a></p>
+<p>- The most extensively used verb is the &#39;be&#39; linking verb (is, was, are...)</p>
+<p>- The most extensively used sentence structure is therefore &quot;subject + &quot;be&quot; + </p>
+<p>&quot;adjective&quot;, eg. &quot;the place was comfortable&quot;</p>
+<p>- Given such, verbs are ignored during analysis</p>
+<p>- <strong>Intent analysis</strong> was not performed due to the reviews being too uniform in intention: to inform</p>
+<p>- <strong>Overwhelming majority of reviews were positive</strong>; skewness raises the concern of validity</p>
+<p>- Used <strong>SpaCy</strong> to extract nouns(subjects) and adjectives from every review, aggregated them for insights</p>
+<p>- Used <strong>OpenAI</strong> <strong>ada</strong>(simple, cheap) <strong>engine</strong> to label the reviewers by gender, for demographic insight</p>
+<p>- Originally used openAI&#39;s <strong>davinci-instruct-beta-v3</strong> engine to label the reviews as such:</p>
+<pre><code>Location: 4/5
+
+Cleanliness: 4/5
+
+Amenities: 3/5
+
+Value: 4/5
+</code></pre>
+<p>which would provide more detailed insights (even if without the numerical label), but the attempt has proven to be <strong>cost prohibitive</strong>;</p>
+<p>- A rough estimate places final cost at around $2000 for the entire dataset of ~100k reviews for 1600 listings</p>
+<p>&nbsp;</p>
+<h3 id='bugsproblems'>Bugs/Problems</h3>
+<p>- By caching resources using a service worker, when the user signs out, the user email is still cached in display and would sometimes require an addition refresh to clear; similar for logging in. In the same manner, the CSRF token would expire before the cached page has a chance to refresh the token, leading to a page that displays &quot;The CSTF token has expired&quot;</p>
+<p>&nbsp;</p>
+<h2 id='modeling'>Modeling</h2>
+<p>- cleaning data, standardizing, removing outliers</p>
+<p>- feature selection</p>
+<p>- feature engineering: host years, closeness to landmarks, closeness to subways</p>
+<h4 id='notebooks'>Notebooks:</h4>
+<p><a href='https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda4calendar.ipynb' target='_blank' class='url'>https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda4calendar.ipynb</a>
+<a href='https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda3model.ipynb' target='_blank' class='url'>https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda3model.ipynb</a>
+<a href='https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda2.ipynb' target='_blank' class='url'>https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda2.ipynb</a>
+<a href='https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda1.ipynb' target='_blank' class='url'>https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda1.ipynb</a>
+<a href='https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda0.ipynb' target='_blank' class='url'>https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/eda0.ipynb</a></p>
+<p>&nbsp;</p>
+<h2 id='other-considerations'>Other Considerations</h2>
+<h4 id='dataset'>Dataset</h4>
+<p>    - Non-direct source of data; scraped data; original data is not available</p>
+<p>    - Reviews data extremely biased towards the positive - questioning the integrity of AirBnB.</p>
+<p>    - First-hand data is not accessible due to AirBnB&#39;s lack of openness</p>
+<p>    - Calendar data is forward looking</p>
+<p>    - No transactional data</p>
+<h4 id='calendar-feature'>Calendar Feature</h4>
+<p>- Original proposition shown</p>
+<p><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/calendar_feature.png" referrerpolicy="no-referrer" alt="calendar_feature"></p>
+<p>- Dataset for such feature was prepared and engineered. Days of week and holidays are considered. shown below; </p>
+<p><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/image-20211126075100717.png" alt="image-20211126075100717" style="zoom:50%;" /></p>
+<p><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/image-20211126075136514.png" referrerpolicy="no-referrer" alt="image-20211126075136514"></p>
+<p><img src="https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/image-20211126075239980.png" referrerpolicy="no-referrer" alt="image-20211126075239980"></p>
+<p>- calendar feature is eventually <strong>NOT implemented</strong> due to the consideration of the fact that the entire calendar dataset is based on AirBnB&#39;s forward predictions (Jul 2021 to Jul 2022)</p>
+<p>- predicting based on predictions = error on errors</p>
+<p>- <strong>IF</strong>, with historical, transactional data available, such an implementation would be much more useful</p>
+<p>&nbsp;</p>
+<h4 id='image-analysis-cnn'>Image Analysis, CNN</h4>
+<p>- Potential image analysis methods considered</p>
+<p>- Image resolution analysis: images are taken by professional photographers, so high resolution is uniform, lacking differentiability</p>
+<p>- &#39;image appeal&#39;: lacking a useful, labeled dataset for such metric</p>
+<p>- Other subjective metrics, such as how spacious a property feels and how clean it is, are considered, but not implemented due to constraints</p>
+<p>&nbsp;</p>
+</body>
+</html>

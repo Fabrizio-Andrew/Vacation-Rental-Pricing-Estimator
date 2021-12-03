@@ -1,0 +1,747 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<section id="insights" class="bg-white text-light p-5 ">
+    <div class="container text-dark">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Insights</h1>
+                <h2 class="text-warning text-center d-lg-none d-md-none d-sm-block ">
+                    View in Larger screen or in portrait mode and refresh for best results.
+                </h2>
+            </div>
+            <div class="col-md-12">
+                <h5 class="text-center text-secondary"> ► Filter selections to explore data</h5>
+                <br>
+            </div>
+            
+            <div id="filters" class="col-md-12">
+                <!-- data/neighbourhoods.csv -->
+                <div class="row">
+                    <div class="col-md-3">
+                    <select class="form-select" id="neighbourhoods" aria-label="Default select example">
+                        <option selected value=''>Select Neightbourhood</option>
+                      </select>
+                    </div>
+
+                    <!-- Super Host Status -->  
+                    <div class="col-md-3">
+                    <select class="form-select" id="superhost" aria-label="Default select example">
+                        <option selected value=''>Super Host Status</option>
+                        <option value="TRUE">Yes - SuperHost</option>
+                        <option value="FALSE">No - Not SuperHost</option>
+                      </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <!-- Response rate slider -->
+                    <div class="col-md-3">
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="100" value="0" class="slider" id="response_rate"
+                                oninput="updateResponseRate();">
+                            <p>Response Rate >= <span id="response_rate_value">0</span>%</p>
+                        </div>
+                    </div>
+
+                    <!-- Host Years slider -->
+                    <div class="col-md-3">
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="13" value="0" class="slider" id="host_years_slider"
+                                oninput="updateHostYears();">
+                            <p>Host Experience >= <span id="host_years_value">0</span> years</p>
+                        </div>
+                    </div>
+
+                    <!-- button -->
+                    <div class="col-md-3">
+                        <button onclick="QueryDatabase();" id="filter" class="btn btn-primary btn-block">Filter</button>
+                    </div>
+            </div>
+
+<br>
+            <div class="row">
+                <nav class="justify-content-md-center">
+                    <div class="nav nav-tabs align-items-center" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="insight-tab" data-bs-toggle="tab"
+                            data-bs-target="#insight" type="button" role="tab">Insights</button>
+                        <button class="nav-link" id="individuals-tab" data-bs-toggle="tab" data-bs-target="#individuals"
+                            type="button" role="tab">Reviews NLP</button>
+                        <!-- <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button> -->
+                    </div>
+                </nav>
+
+                <div class="tab-content text-dark" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="insight" role="tabpanel"
+                        aria-labelledby="insight-tab">
+
+                        <div class="text-center m-5">
+                            <div class="spinner-grow text-danger" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="text-center m-5">
+                                <h2 class="text-warning">Filter to see results</h2>
+                            </div>
+                            <!-- <h2 class="text-danger">Loading...</h2> -->
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="individuals" role="tabpanel"
+                        aria-labelledby="individuals-tab">
+
+                        <div class="text-center m-5">
+                            <div class="spinner-grow text-danger" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="text-center m-5">
+                                <h2 class="text-warning">Filter to see results</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+</section>
+<script src="/static/js/jquery-3.6.0.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.6.3.min.js'></script>
+
+<script>
+    d3.csv("data/neighbourhoods.csv")
+    .then(function(data) {
+        // console.log(data);
+        var neighbourhoods = d3.select("#neighbourhoods");
+        data.forEach(function(d) {
+            neighbourhoods.append("option").text(d.neighbourhood).property("value", d.neighbourhood);
+        });
+    })
+    function updateResponseRate() {
+        var response_rate = document.getElementById("response_rate").value;
+        document.getElementById("response_rate_value").innerHTML = response_rate;
+    }
+    function updateHostYears() {
+        var host_years = document.getElementById("host_years_slider").value;
+        document.getElementById("host_years_value").innerHTML = host_years;
+    }
+
+    function QueryDatabase(){
+        var neighbourhood = d3.select("#neighbourhoods").property("value");
+        var superhost = d3.select("#superhost").property("value");
+        var response_rate = d3.select("#response_rate").property("value");
+        var host_years = d3.select("#host_years_slider").property("value");
+
+        var insightElement = d3.select("#insight");
+        var individualsElements = d3.select("#individuals");
+
+        insightElement.html(`
+        <div class="text-center m-5">
+                <div class="spinner-grow text-success" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="text-center m-5">
+                                <h2 class="text-success">Retrieving Results</h2>
+                            </div>
+            </div>`);
+        individualsElements.html(`
+        <div class="text-center m-5">
+                <div class="spinner-grow text-success" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="text-center m-5">
+                                <h2 class="text-success">Retrieving Results... This may take a while</h2>
+                </div>
+            </div>`);
+
+        to_query= "neighbourhood=" + neighbourhood + "&superhost=" + superhost;
+        if (response_rate != 0){
+            to_query += "&response_rate=" + response_rate;
+        }
+        if (host_years != 0){
+            to_query += "&host_years=" + host_years;
+        }
+
+        d3.json('/query?'+to_query)
+        .then(function(data) {
+            console.log(data);
+            if (data.length <= 2) {
+                insightElement.html(`
+                <div class="text-center m-5">
+                    <h2 class="text-danger">No results found, please reduce filters.</h2>
+                </div>
+                `);
+                individualsElements.html(`
+                <div class="text-center m-5">
+                    <h2 class="text-danger">No results found, please reduce filters.</h2></div>
+                    `);
+            
+            }else{
+
+            insightElement.html(`
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6  text-start  m-2 ">
+                            <h5 class="text-center">Aggregate Stats</h5>
+                            <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Statistic</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+<tbody>
+    <tr>
+      <td>Number of Datapoints</td>
+      <td>${data.length}</td>
+    </tr>
+    <tr>
+      <td>Average Price</td>
+      <td>$${+d3.mean(data, function(d) { return d.price; }).toFixed(2)}</td>
+    </tr>
+    <tr>
+      <td>Median Price</td>
+      <td>$${+d3.median(data, function(d) { return d.price; }).toFixed(2)}</td>
+    </tr>
+    <tr>
+      <td>Standard Deviation</td>
+      <td>$${+d3.deviation(data, function(d) { return d.price; }).toFixed(2)}</td>
+    </tr>
+    <tr>
+      <td>Average Rating</td>
+      <td>${+d3.mean(data, function(d) { return d.review_scores_rating; }).toFixed(2)}</td>
+    </tr>
+
+
+    </tbody>
+  </table>
+
+                     
+                     
+                            </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12  col-md-12 text-center m-2 ">
+                            <div id="neigh_box">
+                            </div>
+                    </div>
+                    </div>
+
+                <div class="row">
+                    <div class="col-lg  col-md text-center m-2 ">
+                            <div id="room_types_plot">
+                            </div>
+                    </div>
+                    <div class="col-lg  col-md text-center m-2 ">
+                            <div id="room_types_pie_chart">
+                            </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg  col-md text-center m-2 ">
+                            <div id="reviews_radar">
+                            </div>
+                    </div>
+                    <div class="col-lg  col-md text-center m-2 ">
+                            <div id="super_host_pie">
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg  col-md text-center m-2 ">
+                            <div id="accomodates_bar">
+                            </div>
+                    </div>
+                    <div class="col-lg  col-md text-center m-2 ">
+                            <div id="host_years_hist">
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            `);
+
+            var box_data = d3.rollup(data,
+            function(v){
+                y = v.map(function(g) { return g.price;}).sort(d3.ascending);
+                name = v[0].neighbourhood_cleansed;
+                
+                return({
+                    y: y,
+                    name: name,
+                    type: 'violin',
+                    box: {
+                            visible: true
+                        },
+                    points: 'none',
+                    marker: {
+                        // color: 'rgb(8,81,156)',
+                        outliercolor: 'rgba(219, 64, 82, 0.6)',
+                        line: {
+                        outliercolor: 'rgba(219, 64, 82, 1.0)',
+                        outlierwidth: 2
+                        }
+                    },
+
+                });
+            }
+            , d => d.neighbourhood_cleansed);
+
+            box_data = Array.from( box_data.values() );
+            var layout = {
+                    title: 'Neighborhoods Price Box Plots'    
+                };
+            Plotly.newPlot('neigh_box', box_data,layout);
+            
+
+
+            // Room Types Plot      
+            var room_types_data = d3.rollup(data,
+            function(v){
+                y = v.map(function(g) { return g.price;}).sort(d3.ascending);
+                name = v[0].room_type;
+                return({
+                    y: y,
+                    name: name,
+                    type: 'violin',
+                    box: {
+                            visible: true
+                    },
+                    points: 'none',
+                    marker: {
+                        // color: 'rgb(88,81,156)',
+                        outliercolor: 'rgba(219, 64, 82, 0.6)',
+                        line: {
+                        outliercolor: 'rgba(219, 64, 82, 1.0)',
+                        outlierwidth: 2
+                        }
+                    },
+
+                })}, d => d.room_type);
+            console.log(room_types_data);
+            room_types_data = Array.from( room_types_data.values() );
+            var layout = {
+                    title: 'Room Types and Price Violin Plots'    
+                };
+            Plotly.newPlot('room_types_plot', room_types_data,layout);
+
+            // Room type Pie chart
+            var room_types_pie_data = d3.rollup(data, v => v.length, d => d.room_type)
+            var pie_data = [{
+                values: Array.from( room_types_pie_data.values() ),
+                labels: Array.from( room_types_pie_data.keys() ),
+                type: 'pie'
+            }];
+            var layout = {
+                title:"Room Types Count and Pie"
+            };
+
+            Plotly.newPlot('room_types_pie_chart', pie_data, layout);
+
+
+            // reviews Average radar chart
+            var review_scores_rating = d3.mean(data, function(d) { return d.review_scores_rating; });
+            var review_scores_accuracy = d3.mean(data, function(d) { return d.review_scores_accuracy; });
+            var review_scores_cleanliness = d3.mean(data, function(d) { return d.review_scores_cleanliness; });
+            var review_scores_checkin = d3.mean(data, function(d) { return d.review_scores_checkin; });
+            var review_scores_communication = d3.mean(data, function(d) { return d.review_scores_communication; });
+            var review_scores_location = d3.mean(data, function(d) { return d.review_scores_location; });
+            var review_scores_value = d3.mean(data, function(d) { return d.review_scores_value; });
+
+            var reviews_radar_data = [{
+                type: 'scatterpolar',
+                r: [review_scores_rating, review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value],
+                theta: ['Overall','Accuracy', 'Cleanliness', 'Check-in', 'Communication', 'Location', 'Value'],
+                fill: 'toself'
+                }]
+            
+                layout = {
+                    polar: {
+                        radialaxis: {
+                        visible: true,
+                        range: [4.2, 5]
+                        }
+                    },
+                    showlegend: false,
+                    title:"Average Reviews Scores"
+                }
+
+            Plotly.newPlot("reviews_radar", reviews_radar_data, layout)
+            
+            // super_host_pie
+
+            var super_host_pie_data = d3.rollup(data, v => v.length, d => d.host_is_superhost)
+            var pie_data = [{
+                values: Array.from( super_host_pie_data.values() ),
+                labels: Array.from( super_host_pie_data.keys() ),
+                type: 'pie'
+            }];
+            // map labels from True to "Superhost"
+            pie_data[0].labels = pie_data[0].labels.map(function(d){
+                if (d == true){
+                    return "Superhost"
+                }
+                else{
+                    return "Not Superhost"
+                }
+            })
+
+            var layout = {
+                title:"Superhost Status Count and Pie"
+            };
+
+            Plotly.newPlot('super_host_pie', pie_data, layout);
+
+            // accomodates_bar
+            var accomodates_bar_data = d3.rollup(data, v => v.length, d => d.accommodates)
+            var accomodates_bar_data2 = d3.rollup(data, v => d3.mean(v, d => d.price), d => d.accommodates)
+            var bar_data = [{
+                x: Array.from( accomodates_bar_data.keys() ),
+                y: Array.from( accomodates_bar_data.values() ),
+                type: 'bar',
+                name: 'Accomodates'
+            },
+            {
+                x: Array.from( accomodates_bar_data2.keys() ),
+                y: Array.from( accomodates_bar_data2.values() ),
+                type: 'scatter',
+                mode: 'markers',
+                name: 'Average Price',
+                yaxis: 'y2',
+
+            }];
+
+            var layout = {
+                title:"Accomodates Count and Bar",
+                yaxis: {
+                    title: 'Count'
+                },
+                xaxis: {
+                    title: 'Accomodates'
+                },
+                yaxis2: {
+                    title: 'Price',
+                    // titlefont: {color: 'rgb(148, 103, 189)'},
+                    // tickfont: {color: 'rgb(148, 103, 189)'},
+                    overlaying: 'y',
+                    side: 'right'
+                }
+
+            };
+            // console.log(bar_data);
+            Plotly.newPlot('accomodates_bar', bar_data, layout);
+
+            
+            // host_years_price
+            var price_hist_data = d3.rollup(data, v => d3.mean(v, d=>d.price), d => Math.floor(d.host_number_of_years))
+            var price_hist_data2 = d3.rollup(data, v => v.length, d => Math.floor(d.host_number_of_years))
+            
+            var host_years_list = Array.from(price_hist_data.keys());
+            var price_list = Array.from(price_hist_data.values());
+            var host_count = Array.from(price_hist_data2.values());
+
+            var host_years_price_data = [{
+                x: host_years_list,
+                y: price_list,
+                type: 'scatter',
+                mode: 'markers',
+                marker: {
+                    color: 'rgb(219, 64, 82)',
+                    size: 6
+                },
+                name: 'Host Years Price',
+                yaxis: 'y2',
+                },
+                {
+                x: host_years_list,
+                y: host_count,
+                type: 'bar',
+                opacity: 0.75,
+                name: 'Host Years Count',
+                
+                }
+            ];
+            var layout = {
+                title:'Host Years Count and Price',
+                xaxis: {title: "Host Number of Years"},
+                yaxis: {title: "Count"},
+                yaxis2: {
+                    title: 'Price',
+                    // titlefont: {color: 'rgb(148, 103, 189)'},
+                    // tickfont: {color: 'rgb(148, 103, 189)'},
+                    overlaying: 'y',
+                    side: 'right'
+                }
+            };
+            Plotly.newPlot('host_years_hist', host_years_price_data, layout);
+
+            
+            
+
+
+
+
+
+        }
+        // return here / then
+        // get unique listing id's from data
+        var unique_listing_ids = d3.rollup(data, v => v.length, d => d.id)
+        var unique_listing_ids_list = Array.from(unique_listing_ids.keys());
+        // send post request 
+        var csrf_token = '{{ csrf_token() | string }}';
+        d3.json('/query_reviews', {
+        method:"POST",
+        body: JSON.stringify({
+            listing_id: unique_listing_ids_list,
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            'X-CSRF-Token': csrf_token,
+        }
+        })
+        .then(function(data){
+            console.log(data);
+            console.log(data.length);
+            individualsElements.html(`
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg  col-md text-center">
+                            <div id="gender_pie">
+                            </div>
+                    </div>
+                    <div class="col-lg  col-md text-center">
+                            <div id="positive_neg_pie">
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg  col-md text-center">
+                            <div id="polarity_hist">
+                            </div>
+                    </div>
+                    <div class="col-lg  col-md text-center">
+                            <div id="subjectivity_hist">
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12  col-md-12 text-center">
+                            <div id="most_frequent_nouns">
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12  col-md-12 text-center">
+                            <div id="most_frequent_adjs">
+                            </div>
+                    </div>
+                </div>
+            </div>
+            
+            `);
+            // reviewer gender pie chart:gender_pie
+            function mapGender(gender){
+                if (gender == "male"){
+                    return "male"
+                }
+                if (gender == "female"){
+                    return "female"
+                }
+                return "Unknown"
+            }
+            var reviewer_gender = d3.rollup(data, v => v.length, d => mapGender(d.reviewer_gender))
+            var pie_data = [{
+                values: Array.from( reviewer_gender.values() ),
+                labels: Array.from( reviewer_gender.keys() ),
+                type: 'pie'
+            }];
+            var layout = {
+                title:"Reviewers By Gender"
+            };
+            Plotly.newPlot('gender_pie', pie_data, layout);
+            
+            // positive_neg_pie
+            function mapPosNeg(val){
+                if (val>0){
+                    return "Positive"
+                }
+                if (val<0){
+                    return "Negative"
+                }
+                return "Neutral"
+            }
+            var reviewer_pos_neg = d3.rollup(data, v => v.length, d => mapPosNeg(d.polarity))
+            var pie_data = [{
+                values: Array.from( reviewer_pos_neg.values() ),
+                labels: Array.from( reviewer_pos_neg.keys() ),
+                type: 'pie'
+            }];
+            var layout = {
+                title:"Positive/Negative Reviews"
+            };
+            Plotly.newPlot('positive_neg_pie', pie_data, layout);
+
+
+            // histogram of pos/neg reviews: polarity_hist
+            var polarity_list = Array.from(d3.rollup(data, v => v.length, d => d.polarity.toFixed(2)).keys());
+            // var polarity_list = Array.from(d3.rollup(data, v => v.length, d => (Math.ceil(d.polarity*10)/10).toFixed(2)).keys());
+            var polarity_count = Array.from(d3.rollup(data, v => v.length, d => d.polarity.toFixed(2)).values());
+            var polarity_hist_data = [{
+                x: polarity_list,
+                y: polarity_count,
+                type: 'bar',
+                opacity: 0.75,
+                name: 'Polarity Count',
+                
+                }
+            ];
+            var layout = {
+                title:'Polarity Count',
+                xaxis: {title: "Polarity"},
+                yaxis: {title: "Count"},
+            };
+            Plotly.newPlot('polarity_hist', polarity_hist_data, layout);
+
+            // histogram of pos/neg reviews: subjectivity_hist
+            var subjectivity_list = Array.from(d3.rollup(data, v => v.length, d => d.subjectivity.toFixed(2)).keys());
+            var subjectivity_count = Array.from(d3.rollup(data, v => v.length, d => d.subjectivity.toFixed(2)).values());
+            var subjectivity_hist_data = [{
+                x: subjectivity_list,
+                y: subjectivity_count,
+                type: 'bar',
+                opacity: 0.75,
+                name: 'Subjectivity Count',
+                
+                }
+            ];
+            var layout = {
+                title:'Subjectivity Count',
+                xaxis: {title: "Subjectivity"},
+                yaxis: {title: "Count"},
+            };
+            Plotly.newPlot('subjectivity_hist', subjectivity_hist_data, layout);
+            
+            // most_frequent_nouns
+            adj_dict = {};
+            noun_dict = {};
+            data.forEach((d, idx) => {
+                var nouns = d.nouns.split(" ");
+                nouns.forEach((n, i) => {
+                    // if noun is in dictionary
+                    if (noun_dict[n]){
+                        // increment count
+                        noun_dict[n] += 1;
+                    }
+                    // if noun is not in dictionary
+                    else{
+                        // add noun to dictionary
+                        noun_dict[n] = 1;
+                    }
+                });
+
+                var adjectives = d.adjectives.split(" ");
+                adjectives.forEach((a, i) => {
+                    if (adj_dict[a]){
+                        adj_dict[a] += 1;
+                    }
+                    else{
+                        adj_dict[a] = 1;
+                    }
+                });
+
+            })
+
+            var noun_arr = [];
+            for (var key in noun_dict) {
+                if (noun_dict.hasOwnProperty(key)) {
+                    noun_arr.push( [ key, noun_dict[key] ] );
+                }
+            }
+            noun_arr.sort(function(a, b) {
+                return b[1] - a[1];
+            });
+            var noun_arr_top_ten = noun_arr.slice(0, 20);
+
+            var noun_arr_top_ten_labels = [];
+            var noun_arr_top_ten_counts = [];
+            noun_arr_top_ten.forEach((d, i) => {
+                if(d[0]){
+                    noun_arr_top_ten_labels.push(d[0]);
+                    noun_arr_top_ten_counts.push(d[1]);
+                }
+            })
+            var noun_arr_top_ten_data = [{
+                x: noun_arr_top_ten_labels,
+                y: noun_arr_top_ten_counts,
+                type: 'bar',
+                opacity: 0.75,
+                name: 'Noun Count',
+                
+                }
+            ];
+            var layout = {
+                title:'Top Subjects',
+                xaxis: {title: "Noun"},
+                yaxis: {title: "Count"},
+            };
+            Plotly.newPlot('most_frequent_nouns', noun_arr_top_ten_data, layout);
+
+            var adj_arr = [];
+            for (var key in adj_dict) {
+                if (adj_dict.hasOwnProperty(key)) {
+                    adj_arr.push( [ key, adj_dict[key] ] );
+                }
+            }
+            adj_arr.sort(function(a, b) {
+                return b[1] - a[1];
+            });
+            var adj_arr_top_ten = adj_arr.slice(0, 20);
+
+            var adj_arr_top_ten_labels = [];
+            var adj_arr_top_ten_counts = [];
+            adj_arr_top_ten.forEach((d, i) => {
+                if(d[0]){
+                    adj_arr_top_ten_labels.push(d[0]);
+                    adj_arr_top_ten_counts.push(d[1]);
+                }
+            })
+            var adj_arr_top_ten_data = [{
+                x: adj_arr_top_ten_labels,
+                y: adj_arr_top_ten_counts,
+                type: 'bar',
+                opacity: 0.75,
+                name: 'Adjectives Count',
+                
+                }
+            ];
+            var layout = {
+                title:'Top Adjectives',
+                xaxis: {title: "Adjectives"},
+                yaxis: {title: "Count"},
+            };
+            Plotly.newPlot('most_frequent_adjs', adj_arr_top_ten_data, layout);
+
+
+
+        }
+        )
+
+
+
+
+
+
+        });
+
+
+
+
+     }
+</script>
+{% endblock %}

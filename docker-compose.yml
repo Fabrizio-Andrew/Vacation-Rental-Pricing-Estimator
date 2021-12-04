@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  db:
+    image: "postgres:12"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: vacationpostgres
+  vacationrentalpricingestimator:
+    image: vacationrentalpricingestimator
+    build:
+      context: .
+      dockerfile: ./Dockerfile.local
+      args:
+        - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+        - AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+        - APP_SETTINGS="DevelopmentConfig"
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m flask run --no-debugger --no-reload --host 0.0.0.0 --port 5000"]
+    ports:
+      - 5000:5000
+      - 5678:5678
+    environment:
+      - FLASK_APP=routes.py

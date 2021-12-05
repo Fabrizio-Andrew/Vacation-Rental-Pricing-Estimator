@@ -1,6 +1,9 @@
-from flask import Flask, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory
+from flask import Flask, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory, session
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from authlib.integrations.flask_client import OAuth
+from functools import wraps
+from six.moves.urllib.parse import urlencode
 import geopy.distance
 import pandas as pd
 from sqlalchemy import create_engine
@@ -23,6 +26,18 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
+)
+
+oauth = OAuth(app)
+
+auth0 = oauth.register(
+    'auth0',
+    client_id=app.config['AUTH0_CLIENT_ID'],
+    client_secret=app.config['AUTH0_CLIENT_SECRET'],
+    api_base_url=app.config['API_BASE_URL'],
+    access_token_url=app.config['AUTH0_ACCESS_TOKEN_URL'],
+    authorize_url=app.config['AUTH0_AUTHORIZE_URL'],
+    client_kwargs=app.config['AUTH0_CLIENT_KWARGS']
 )
 
 # production_db_uri1 = environ.get('HEROKU_POSTGRESQL_WHITE_URL').replace("postgres://", "postgresql://")
@@ -68,62 +83,108 @@ def sw():
 def manifest():
     return send_from_directory(app.root_path, 'manifest.json')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        user = User.query.filter_by(email=request.form['email']).first()
-        if user:
-            if sha256.verify(request.form['password'], user.password):
-                login_user(user) # remember=True, duration=datetime.timedelta(days=1)
-                # remember = request.form['remember']
-                return redirect(url_for('index'))
-            else:
-                return render_template('login.html', message='Wrong email or password!')
-        return render_template('login.html', message='Wrong email or password!')
-    return render_template('login.html')
+@app.route('/callback')
+def callback_handling():
+    # Handles response from token endpoint
+    auth0.authorize_access_token()
+    resp = auth0.get('userinfo')
+    userinfo = resp.json()
 
+    # Store the user information in flask session.
+    session['jwt_payload'] = userinfo
+    session['profile'] = {
+        'user_id': userinfo['sub'],
+        'name': userinfo['name'],
+        'picture': userinfo['picture']
+    }
+    return redirect('/')
+
+@app.route('/login')
+def login():
+    return auth0.authorize_redirect(redirect_uri=app.config['AUTH0_CALLBACK_URL'])
+
+def requires_auth(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    if 'profile' not in session:
+      # Redirect to Login page here
+      return redirect('/')
+    return f(*args, **kwargs)
+
+  return decorated
 
 @app.route('/logout')
-@login_required
-def signout():
-    logout_user()
-    return redirect(url_for('index'))
+def logout():
+    # Clear session stored data
+    session.clear()
+    # Redirect user to logout endpoint
+    params = {'returnTo': url_for('home', _external=True), 'client_id': 'YOUR_CLIENT_ID'}
+    return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        user = User.query.filter_by(email=request.form['email']).first()
-        if user:
-            return render_template('signup.html', message='''<div class="alert alert-warning" role="alert">Email already exists! Please <a href='/login'>Login</a> </div>''')
-        else:
-            email = request.form['email']
-            password = request.form['password']
-            if password_validation(password):
-                pass
-            else:
-                return render_template('signup.html',
-                message='''<div class="alert alert-warning" role="alert">Password must contain 6-20 characters, one uppercase letter, one lowercase letter, one number and one special character</div>''')
+@app.route('/user_dashboard')
+@requires_auth
+def dashboard():
+    return render_template('user_dashboard.html',
+                           userinfo=session['profile'],
+                           userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
+
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         user = User.query.filter_by(email=request.form['email']).first()
+#         if user:
+#             if sha256.verify(request.form['password'], user.password):
+#                 login_user(user) # remember=True, duration=datetime.timedelta(days=1)
+#                 # remember = request.form['remember']
+#                 return redirect(url_for('index'))
+#             else:
+#                 return render_template('login.html', message='Wrong email or password!')
+#         return render_template('login.html', message='Wrong email or password!')
+#     return render_template('login.html')
+
+
+# @app.route('/logout')
+# @login_required
+# def signout():
+#     logout_user()
+#     return redirect(url_for('index'))
+
+# @app.route('/signup', methods=['GET', 'POST'])
+# def signup():
+#     if request.method == 'POST':
+#         user = User.query.filter_by(email=request.form['email']).first()
+#         if user:
+#             return render_template('signup.html', message='''<div class="alert alert-warning" role="alert">Email already exists! Please <a href='/login'>Login</a> </div>''')
+#         else:
+#             email = request.form['email']
+#             password = request.form['password']
+#             if password_validation(password):
+#                 pass
+#             else:
+#                 return render_template('signup.html',
+#                 message='''<div class="alert alert-warning" role="alert">Password must contain 6-20 characters, one uppercase letter, one lowercase letter, one number and one special character</div>''')
             # if email_validation(email):
             #     pass
             # else:
             #     return render_template('signup.html',
             #     message='''<div class="alert alert-warning" role="alert">Email Invalid!</div>''')
-            user = User(email=email, password=sha256.hash(password))
-            db.session.add(user)
-            db.session.commit()
-            login_user(user)
-            return render_template('signup.html', message='''<div class="alert alert-success" role="alert">Signup successful! You will be redirected shortly! Or Click <a href='/'>Here</a></div>
-                        <script>setTimeout(function(){window.location.href = '/';}, 2000);</script>''')
-    else:
-        return render_template('signup.html')
+#             user = User(email=email, password=sha256.hash(password))
+#             db.session.add(user)
+#             db.session.commit()
+#             login_user(user)
+#             return render_template('signup.html', message='''<div class="alert alert-success" role="alert">Signup successful! You will be redirected shortly! Or Click <a href='/'>Here</a></div>
+#                         <script>setTimeout(function(){window.location.href = '/';}, 2000);</script>''')
+#     else:
+#         return render_template('signup.html')
 
-def password_validation(password):
-    reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
-    pat = re.compile(reg)
-    match = re.search(pat, password)
-    if match:
-        return True
-    return False
+# def password_validation(password):
+#    reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$" # LOL
+#    pat = re.compile(reg)
+#    match = re.search(pat, password)
+#    if match:
+#        return True
+#    return False
 
 
 @app.route('/', methods=['GET', 'POST'])

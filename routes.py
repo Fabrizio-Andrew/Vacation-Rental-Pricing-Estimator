@@ -37,7 +37,7 @@ app.config.update(
 # app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI_NEW
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-app.secret_key = environ.get('SECRET_KEY')
+app.secret_key = app.config['SECRET_KEY']
 login_manager = LoginManager()
 login_manager.init_app(app)
 

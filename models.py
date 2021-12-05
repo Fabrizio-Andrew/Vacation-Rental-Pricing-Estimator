@@ -1,16 +1,28 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
+from sqlalchemy.dialects.postgresql import JSON
 
 db = SQLAlchemy()
 
-class User(UserMixin, db.Model):
-    """User of the site."""
+class User(db.Model):
+    __tablename__ = 'User'
 
-    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(80))
+    email_verified = db.Column(db.Boolean)
+    family_name = db.Column(db.String(40))
+    given_name = db.Column(db.String(40))
+    locale = db.Column(db.String())
+    name = db.Column(db.String(80))
+    nickname = db.Column(db.String(80))
+    picture = db.Column(db.String())
+    sub = db.Column(db.String())
+    updated_at = db.Column(db.String())
+    last_login = db.Column(db.DateTime)
 
-    uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
-    
-    def get_id(self):
-        return self.uid
+    def __init__(self, url, result_all, result_no_stop_words):
+        self.url = url
+        self.result_all = result_all
+        self.result_no_stop_words = result_no_stop_words
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)

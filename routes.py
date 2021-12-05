@@ -9,7 +9,7 @@ import simplejson as json
 from models import User, db
 from passlib.hash import sha256_crypt as sha256
 import re
-from os import environ
+import os
 
 app = Flask(__name__)
 app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')

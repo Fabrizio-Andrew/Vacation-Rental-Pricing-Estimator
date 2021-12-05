@@ -23,3 +23,7 @@ six==1.16.0
 SQLAlchemy==1.4.27
 Werkzeug==2.0.2
 Flask-WTF==1.0.0
+python-dotenv
+requests
+authlib
+Flask-Script

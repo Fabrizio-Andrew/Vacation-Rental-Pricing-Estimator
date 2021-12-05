@@ -12,6 +12,8 @@ import re
 from os import environ
 
 app = Flask(__name__)
+app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')
+
 
 csrf = CSRFProtect()
 csrf.init_app(app)
@@ -28,18 +30,18 @@ app.config.update(
 # app.secret_key = os.environ.get('SECRET_KEY')
 # app.config['SQLALCHEMY_DATABASE_URI'] = production_db_uri0
 
-DATABASE_URI_NEW = environ.get('HEROKU_POSTGRESQL_WHITE_URL').replace("postgres://", "postgresql://")
+# DATABASE_URI_NEW = environ.get('HEROKU_POSTGRESQL_WHITE_URL').replace("postgres://", "postgresql://")
 # "postgresql://dbudyqehphowvj:ce19f33d1898777e99ec500d4651375b6deb8f98bb8d4caa5a3254e97126e527@ec2-34-198-189-252.compute-1.amazonaws.com:5432/d1gel5ia1af8fe"
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI_NEW
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI_NEW
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 app.secret_key = environ.get('SECRET_KEY')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-db_query = create_engine(DATABASE_URI_NEW)
+db_query = create_engine(app.config['SQL_URL'])
 
 sites_data_path = "data/sites_boston.csv"
 subway_data_path = "data/transport/subway.json"

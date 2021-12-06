@@ -19,6 +19,8 @@
     <script src="/static/js/bootstrap.bundle.min.js" type="text/javascript"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="/static/js/chart.min.js"></script>
+    <!-- <script src="/static/js/session.js"></script> -->
+
 
     {% if not title %}
     <title>Vacation Rental Pricing Helper</title>
@@ -62,7 +64,7 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="/login" class="btn btn-primary">Login</a>
+                        <a href="/login" class="btn btn-primary" id="login-button">Login</a>
                     </li>
                     <li class="nav-item">
                         <a href="/signup" class="btn btn-warning text-white">Sign Up</a>

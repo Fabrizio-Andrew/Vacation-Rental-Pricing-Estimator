@@ -18,9 +18,9 @@ app = Flask(__name__)
 app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')
 
 
-csrf = CSRFProtect()
-csrf.init_app(app)
-app.config['CUSTOM_STATIC_PATH'] = app.root_path + '/data/'
+#csrf = CSRFProtect()
+#scsrf.init_app(app)
+#app.config['CUSTOM_STATIC_PATH'] = app.root_path + '/data/'
 # app.config['WTF_CSRF_TIME_LIMIT'] = None
 #app.config.update(
 #    SESSION_COOKIE_SECURE=True,
@@ -53,8 +53,8 @@ auth0 = oauth.register(
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 #app.secret_key = app.config['SECRET_KEY']
-login_manager = LoginManager()
-login_manager.init_app(app)
+#login_manager = LoginManager()
+#login_manager.init_app(app)
 
 db_query = create_engine(app.config['SQL_URL'])
 
@@ -71,9 +71,9 @@ with open("data/processed/boston_processed_mean.json") as f:
 with open("data/processed/boston_processed_std.json") as s:
     all_stds = json.load(s)
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.filter_by(uid=user_id).first()
+#@login_manager.user_loader
+#def load_user(user_id):
+#    return User.query.filter_by(uid=user_id).first()
 
 @app.route('/sw.js')
 def sw():
@@ -136,9 +136,11 @@ def logout():
 @app.route('/user_dashboard')
 @requires_auth
 def dashboard():
+    user_context = get_user_context()
     return render_template('user_dashboard.html',
                            userinfo=session['profile'],
-                           userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
+                           userinfo_pretty=json.dumps(session['jwt_payload'], indent=4),
+                           user_context=user_context)
 
 
 @app.route('/', methods=['GET', 'POST'])

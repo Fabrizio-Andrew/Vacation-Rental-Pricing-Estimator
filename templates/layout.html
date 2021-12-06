@@ -52,10 +52,10 @@
                     <li class="nav-item">
                         <a href="/insights" class="nav-link">Insights</a>
                     </li>
-                    {% if current_user.is_authenticated %}
+                    {% if user_context.auth %}
 
                     <li class="nav-item">
-                        <a href="#" class=" nav-link text-white">{{ current_user.email }}</a>
+                        <a href="#" class=" nav-link text-white">{{ user_context.jwt_payload.email }}</a>
                     </li>
                     <li class="nav-item">
                         <a href="/logout" class=" btn btn-danger">Logout</a>

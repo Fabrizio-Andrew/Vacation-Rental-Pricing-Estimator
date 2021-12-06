@@ -1,4 +1,4 @@
-from flask import Flask, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory, session
+from flask import Flask, config, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory, session
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from authlib.integrations.flask_client import OAuth
@@ -22,11 +22,11 @@ csrf = CSRFProtect()
 csrf.init_app(app)
 app.config['CUSTOM_STATIC_PATH'] = app.root_path + '/data/'
 # app.config['WTF_CSRF_TIME_LIMIT'] = None
-app.config.update(
-    SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Lax',
-)
+#app.config.update(
+#    SESSION_COOKIE_SECURE=True,
+#    SESSION_COOKIE_HTTPONLY=True,
+#    SESSION_COOKIE_SAMESITE='Lax',
+#)
 
 oauth = OAuth(app)
 
@@ -52,7 +52,7 @@ auth0 = oauth.register(
 # app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI_NEW
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-app.secret_key = app.config['SECRET_KEY']
+#app.secret_key = app.config['SECRET_KEY']
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -113,12 +113,24 @@ def requires_auth(f):
 
   return decorated
 
+
+def get_user_context():
+    if 'profile' not in session:
+        context = {'auth': False}
+    else:
+        context = {
+            'auth': True,
+            'jwt_payload': session['jwt_payload']
+        }
+    return context
+
+
 @app.route('/logout')
 def logout():
     # Clear session stored data
     session.clear()
     # Redirect user to logout endpoint
-    params = {'returnTo': url_for('home', _external=True), 'client_id': 'YOUR_CLIENT_ID'}
+    params = {'returnTo': url_for('index', _external=True), 'client_id': app.config['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
 @app.route('/user_dashboard')
@@ -129,72 +141,20 @@ def dashboard():
                            userinfo_pretty=json.dumps(session['jwt_payload'], indent=4))
 
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         user = User.query.filter_by(email=request.form['email']).first()
-#         if user:
-#             if sha256.verify(request.form['password'], user.password):
-#                 login_user(user) # remember=True, duration=datetime.timedelta(days=1)
-#                 # remember = request.form['remember']
-#                 return redirect(url_for('index'))
-#             else:
-#                 return render_template('login.html', message='Wrong email or password!')
-#         return render_template('login.html', message='Wrong email or password!')
-#     return render_template('login.html')
-
-
-# @app.route('/logout')
-# @login_required
-# def signout():
-#     logout_user()
-#     return redirect(url_for('index'))
-
-# @app.route('/signup', methods=['GET', 'POST'])
-# def signup():
-#     if request.method == 'POST':
-#         user = User.query.filter_by(email=request.form['email']).first()
-#         if user:
-#             return render_template('signup.html', message='''<div class="alert alert-warning" role="alert">Email already exists! Please <a href='/login'>Login</a> </div>''')
-#         else:
-#             email = request.form['email']
-#             password = request.form['password']
-#             if password_validation(password):
-#                 pass
-#             else:
-#                 return render_template('signup.html',
-#                 message='''<div class="alert alert-warning" role="alert">Password must contain 6-20 characters, one uppercase letter, one lowercase letter, one number and one special character</div>''')
-            # if email_validation(email):
-            #     pass
-            # else:
-            #     return render_template('signup.html',
-            #     message='''<div class="alert alert-warning" role="alert">Email Invalid!</div>''')
-#             user = User(email=email, password=sha256.hash(password))
-#             db.session.add(user)
-#             db.session.commit()
-#             login_user(user)
-#             return render_template('signup.html', message='''<div class="alert alert-success" role="alert">Signup successful! You will be redirected shortly! Or Click <a href='/'>Here</a></div>
-#                         <script>setTimeout(function(){window.location.href = '/';}, 2000);</script>''')
-#     else:
-#         return render_template('signup.html')
-
-# def password_validation(password):
-#    reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$" # LOL
-#    pat = re.compile(reg)
-#    match = re.search(pat, password)
-#    if match:
-#        return True
-#    return False
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title="Home")
+    user_context = get_user_context()
+    return render_template('index.html', 
+                            title="Home",
+                            user_context=user_context)
 
 
 @app.route('/about')
 def about():
-    return render_template('about.html', title="About")
+    user_context = get_user_context()
+    return render_template('about.html', 
+                            title="About",
+                            user_context=user_context)
 
 @app.route('/results_page', methods=['GET', 'POST'])
 def results_page():
@@ -290,6 +250,9 @@ def results_page():
 
         # if time permits; present and do word cloud data
 
+        # Get the user context
+        user_context = get_user_context()
+
         return render_template('results_page.html', title="Results",
             closest_landmarks_list=closest_landmarks_list,
             closest_subways_list=closest_subways_list,
@@ -305,6 +268,7 @@ def results_page():
             chart_labels=chart_labels,
             chart_weights_data=chart_weights_data,
             chart_colors=chart_colors,
+            user_context=user_context
             )
     else:
         return render_template('401.html'), 401
@@ -320,7 +284,11 @@ def unauthorized_user(e):
 
 @app.route('/insights')
 def insights():
-    return render_template('insights.html', title="Insights")
+    user_context = get_user_context()
+    return render_template('insights.html', 
+                            title="Insights",
+                            user_context=user_context
+                            )
 
 @app.route('/query')
 def queryDatabase():

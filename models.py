@@ -1,7 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
+from routes import db
 from flask_login import UserMixin
+from sqlalchemy.dialects.postgresql import JSON
 
-db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
     """User of the site."""

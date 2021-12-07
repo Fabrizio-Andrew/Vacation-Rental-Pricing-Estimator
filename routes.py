@@ -6,14 +6,24 @@ import pandas as pd
 from sqlalchemy import create_engine
 import numpy as np
 import simplejson as json
-from models import User, db
 from passlib.hash import sha256_crypt as sha256
 import re
 import os
+from flask_sqlalchemy import SQLAlchemy
+import config
+from flask_migrate import Migrate
+
 
 app = Flask(__name__)
-app.config.from_object(f'config.{os.environ["APP_SETTINGS"]}')
+app.config.from_object(config.Config)
 
+# Set up the DB
+db = SQLAlchemy(app)
+
+# DB Migrations
+from models import User
+migrate = Migrate()
+migrate.init_app(app, db)
 
 csrf = CSRFProtect()
 csrf.init_app(app)
@@ -37,7 +47,7 @@ app.config.update(
 # app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI_NEW
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-app.secret_key = os.environ.get('SECRET_KEY')
+app.secret_key = app.config['SECRET_KEY']
 login_manager = LoginManager()
 login_manager.init_app(app)
 

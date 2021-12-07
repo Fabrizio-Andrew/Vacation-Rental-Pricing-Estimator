@@ -147,7 +147,7 @@ which would provide more detailed insights (even if without the numerical label)
 
 ### Bugs/Problems
 
-\- By caching resources using a service worker, when the user signs out, the user email is still cached in display and would sometimes require an addition refresh to clear; similar for logging in. In the same manner, the CSRF token would expire before the cached page has a chance to refresh the token, leading to a page that displays "The CSTF token has expired"
+\- By caching resources using a service worker, when the user signs out, the user email is still cached in display and would sometimes require an addition refresh to clear; similar for logging in. In the same manner, the CSRF token would expire before the cached page has a chance to refresh the token, leading to a page that displays "The CSRF token has expired"
 
 
 

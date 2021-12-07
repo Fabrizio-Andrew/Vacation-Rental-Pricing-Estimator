@@ -8,17 +8,14 @@ from sqlalchemy import engine
 # environments. If environment = "staging" or "production", env variables must be established
 # in lieu of secrets.json.
 
-# Local configuration settings - relies on docker compose & secrets.json
-if os.environ.get('APP_SETTINGS') == 'DevelopmentConfig':
+# Local configuration settings - relies on secrets.json
+if os.path.exists('secrets.json'):
     
     f = open('secrets.json')
     secrets = json.load(f)
 
     # Authentication Settings
-    os.environ['AUTH0_CLIENT_ID'] = secrets['AUTH0_CLIENT_ID']
-    os.environ['AUTH0_CLIENT_SECRET'] = secrets['AUTH0_CLIENT_SECRET']
-    os.environ['APP_URL'] = 'http://localhost:5000'
-    os.environ['AUTH0_CALLBACK_URL'] = 'http://localhost:5000/callback'
+    os.environ['SECRET_KEY'] = secrets['SECRET_KEY']
 
     # DB Settings
     os.environ['DB_USER'] = secrets['DB_USER']
@@ -32,15 +29,7 @@ if os.environ.get('APP_SETTINGS') == 'DevelopmentConfig':
 class Config(object):
 
     # Authentication Settings
-    API_BASE_URL = 'https://dev-l0m79glj.us.auth0.com'
-    AUTH0_ACCESS_TOKEN_URL = API_BASE_URL + '/oauth/token'
-    AUTH0_AUTHORIZE_URL = API_BASE_URL + '/authorize'
-    AUTH0_CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID')
-    AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
-    AUTH0_CLIENT_KWARGS = {
-        'scope': 'openid profile email'
-    }
-    SECRET_KEY = os.environ.get('AUTH0_CLIENT_SECRET')
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = False
 
@@ -54,28 +43,3 @@ class Config(object):
         database=os.environ.get('DB_NAME')
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-# Local configuration settings - relies on docker compose
-class DevelopmentConfig(Config):
-
-    # Authentication Settings
-    APP_URL = 'http://localhost:5000'
-    AUTH0_CALLBACK_URL = APP_URL + '/callback'
-
-
-# Staging configuration settings - relies on Heroku env variables
-class StagingConfig(Config):
-
-    # Authentication Settings
-    APP_URL = 'https://immense-mountain-68865.herokuapp.com'
-    AUTH0_CALLBACK_URL = APP_URL + '/callback'
-
-
-
-# Production configuration settings - relies on Heroku env variables
-class ProductionConfig(Config):
-
-    # Authentication Settings
-    APP_URL = 'https://vacation-rental-estimator-prod.herokuapp.com'
-    AUTH0_CALLBACK_URL = APP_URL + '/callback'
-

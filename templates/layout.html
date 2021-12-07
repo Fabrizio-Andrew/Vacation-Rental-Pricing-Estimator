@@ -19,8 +19,6 @@
     <script src="/static/js/bootstrap.bundle.min.js" type="text/javascript"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="/static/js/chart.min.js"></script>
-    <!-- <script src="/static/js/session.js"></script> -->
-
 
     {% if not title %}
     <title>Vacation Rental Pricing Helper</title>
@@ -54,17 +52,17 @@
                     <li class="nav-item">
                         <a href="/insights" class="nav-link">Insights</a>
                     </li>
-                    {% if user_context.auth %}
+                    {% if current_user.is_authenticated %}
 
                     <li class="nav-item">
-                        <a href="#" class=" nav-link text-white">{{ user_context.jwt_payload.email }}</a>
+                        <a href="#" class=" nav-link text-white">{{ current_user.email }}</a>
                     </li>
                     <li class="nav-item">
                         <a href="/logout" class=" btn btn-danger">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="/login" class="btn btn-primary" id="login-button">Login</a>
+                        <a href="/login" class="btn btn-primary">Login</a>
                     </li>
                     <li class="nav-item">
                         <a href="/signup" class="btn btn-warning text-white">Sign Up</a>

@@ -157,7 +157,7 @@
 <!-- main form -->
 <section id="mainform" class="bg-white text-light p-5 ">
     <form id="formid" action="/results_page" method="POST">
-        <!--<input type="hidden" name="csrf_token" value=" csrf_token() ">-->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="container">
         <div class="row g-5">
             <div class="col-md mb-0">

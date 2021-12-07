@@ -1,4 +1,4 @@
-from flask import Flask, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory
+from flask import Flask, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory, session
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import geopy.distance
@@ -21,7 +21,8 @@ app.config.from_object(config.Config)
 db = SQLAlchemy(app)
 
 # DB Migrations
-from models import User
+import models
+
 migrate = Migrate()
 migrate.init_app(app, db)
 
@@ -51,7 +52,7 @@ app.secret_key = app.config['SECRET_KEY']
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-db_query = create_engine(app.config['SQL_URL'])
+db_query = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
 sites_data_path = "data/sites_boston.csv"
 subway_data_path = "data/transport/subway.json"
@@ -68,7 +69,7 @@ with open("data/processed/boston_processed_std.json") as s:
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.filter_by(uid=user_id).first()
+    return models.User.query.filter_by(uid=user_id).first()
 
 @app.route('/sw.js')
 def sw():
@@ -81,7 +82,7 @@ def manifest():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User.query.filter_by(email=request.form['email']).first()
+        user = models.User.query.filter_by(email=request.form['email']).first()
         if user:
             if sha256.verify(request.form['password'], user.password):
                 login_user(user) # remember=True, duration=datetime.timedelta(days=1)
@@ -102,7 +103,7 @@ def signout():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        user = User.query.filter_by(email=request.form['email']).first()
+        user = models.User.query.filter_by(email=request.form['email']).first()
         if user:
             return render_template('signup.html', message='''<div class="alert alert-warning" role="alert">Email already exists! Please <a href='/login'>Login</a> </div>''')
         else:
@@ -118,7 +119,7 @@ def signup():
             # else:
             #     return render_template('signup.html',
             #     message='''<div class="alert alert-warning" role="alert">Email Invalid!</div>''')
-            user = User(email=email, password=sha256.hash(password))
+            user = models.User(email=email, password=sha256.hash(password))
             db.session.add(user)
             db.session.commit()
             login_user(user)
@@ -138,7 +139,21 @@ def password_validation(password):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title="Home")
+    if 'user_submission' not in session:
+        return render_template('index.html', title="Home")
+    return render_template('index.html', 
+                            title='Home', 
+                            cache=True,
+                            AutoAddress=session['user_submission']['AutoAddress'],
+                            HostResponseTime=session['user_submission']['HostResponseTime'],
+                            RoomType=session['user_submission']['RoomType'],
+                            Beds=session['user_submission']['Beds'],
+                            Accomodates=session['user_submission']['Accomodates'],
+                            Longitude=session['user_submission']['Longitude'],
+                            Lattitude=session['user_submission']['Latitude'],
+                            ReviewScore=session['user_submission']['ReviewScore']
+                            )
+
 
 
 @app.route('/about')
@@ -236,6 +251,9 @@ def results_page():
                 chart_colors.append(positive_color)
             else:
                 chart_colors.append(negative_color)
+
+        # Persist user entry data in session
+        session['user_submission'] = user_submission
 
         # if time permits; present and do word cloud data
 

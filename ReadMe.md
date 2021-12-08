@@ -4,10 +4,11 @@ secrets
 
 docker compose up
 
-db setup - https://realpython.com/flask-by-example-part-2-postgres-sqlalchemy-and-alembic/
-$ python manage.py db init
-$ python manage.py db migrate
-$ python manage.py db upgrade
+db setup - 
+$ flask db init (maybe not needed)
+$ flask db stamp head
+$ flask db migrate
+$ flask db upgrade
 
 > Heroku
 

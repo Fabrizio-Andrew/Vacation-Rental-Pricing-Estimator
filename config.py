@@ -34,7 +34,7 @@ class Config(object):
     SESSION_PERMANENT = False
 
     # DB Settings
-    SQL_URL = engine.URL.create(
+    SQLALCHEMY_DATABASE_URI = engine.URL.create(
         'postgresql',
         username=os.environ.get('DB_USER'),
         password=os.environ.get('DB_PASSWORD'),

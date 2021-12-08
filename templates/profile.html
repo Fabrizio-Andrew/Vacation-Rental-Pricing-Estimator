@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<section id="loginSection" style="height:700px" class="bg-white text-dark p-4 mt-5 text-center p-lg-0 p-md-0">
+<!-- post the form to a route, if correct password, route to page   -->
+<div class="container" >
+  <div class="row">
+    <div class="col-md-4"></div>
+<div class="col-md-4">
+    <form id="Login" name="Login" action="/login" method="POST">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
+      <h1 class="h3 mb-3 fw-normal">Profile Information:</h1>
+      {% if message %}
+      <div class="alert alert-danger" role="alert">
+    {{ message }} 
+      </div>
+      {% endif %}
+      <div class="form-floating">
+        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+        <label for="floatingInput">Email address</label>
+      </div>
+
+      <div class="form-floating ">
+        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <label for="floatingPassword">Password</label>
+      </div>
+  
+      <!-- <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div> -->
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Update</button>
+
+    </form>
+  </div>
+
+  <div class="col-md-4"></div>
+
+</div>
+</div>
+  </section>
+  
+{% endblock %}

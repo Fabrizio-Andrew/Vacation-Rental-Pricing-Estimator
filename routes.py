@@ -136,6 +136,16 @@ def password_validation(password):
         return True
     return False
 
+#@app.route('/profile', methods=['GET', 'POST'])
+#@login_required
+#def profile():
+#    if 'user_id' in session:
+#        user = models.User.query.filter_by(uid=session['user_id']).first()
+#        if user:
+#            return render_template('profile.html', 
+#                                    email=user.email)
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -150,7 +160,7 @@ def index():
                             Beds=session['user_submission']['Beds'],
                             Accomodates=session['user_submission']['Accomodates'],
                             Longitude=session['user_submission']['Longitude'],
-                            Lattitude=session['user_submission']['Latitude'],
+                            Latitude=session['user_submission']['Latitude'],
                             ReviewScore=session['user_submission']['ReviewScore']
                             )
 
@@ -275,6 +285,23 @@ def results_page():
             )
     else:
         return render_template('401.html'), 401
+
+@app.route('/save')
+@login_required
+def save_result():
+    prop = models.Property(address=request.form['AutoAddress'],
+                                HostResponseTime=int(request.form['HostResponseTime']),
+                                RoomType=int(request.form['RoomType']),
+                                Beds=int(request.form['Beds']),
+                                Accommodates=int(request.form['Accommodates']),
+                                Longitude=float(request.form['Longitude']),
+                                Latitude=float(request.form['Latitude']),
+                                ReviewScore=float(request.form['ReviewScore']),
+                                user=int(session['user_id']))
+    db.session.add(prop)
+    db.session.commit()
+    return render_template('/', message='<div class="alert alert-success" role="alert">Entry saved!</div>')
+
 
 @app.errorhandler(404)
 def page_not_found(e):

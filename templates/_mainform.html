@@ -56,6 +56,54 @@
                     <label for="Accommodates" class="form-label text-dark">Accommodates </label>
                     <span id="AccommodatesSpan" class="text-primary">{{ Accommodates }}</span>
                 </div>
+                <div class="col-md mb-0">
+                    <h3 class="text-dark text-start mb-3">Host and Reviews Info</h3>
+                    <!-- Host Response Time -->
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="HostResponseTime">
+                            {% if HostResponseTime == 1 %}
+                            <option value="0">Within an Hour</option>
+                            <option selected value="1">Within a few Hours</option>
+                            <option value="2">Within a Day</option>
+                            <option value="3">A Few Days or More</option>
+                            {% elif HostResponseTime == 2 %}
+                            <option value="0">Within an Hour</option>
+                            <option value="1">Within a few Hours</option>
+                            <option selected value="2">Within a Day</option>
+                            <option value="3">A Few Days or More</option>
+                            {% elif HostResponseTime == 3 %}
+                            <option value="0">Within an Hour</option>
+                            <option value="1">Within a few Hours</option>
+                            <option value="2">Within a Day</option>
+                            <option selected value="3">A Few Days or More</option>
+                            {% else %}
+                            <option selected value="0">Within an Hour</option>
+                            <option value="1">Within a few Hours</option>
+                            <option value="2">Within a Day</option>
+                            <option value="3">A Few Days or More</option>
+                            {% endif %}
+                        </select>
+                        <label for="HostResponseTime" class="text-dark">Host Response Time</label>
+                    </div>
+                    <!-- Review Score -->
+                    <div class="text-center">
+                        <input type="range" class="form-range" min="3" max="5" id="ReviewScore" step="0.01" value="{{ ReviewScore }}"
+                            oninput="updateReviewScore();">
+                        <label for="ReviewScore" class="form-label text-dark">Overall Review Score: </label>
+                        <span id="ReviewScoreSpan" class="text-primary">{{ ReviewScore }}</span>
+                    </div>
+                    <!--  Longitude -->
+                    <div class="form-floating mb-3" hidden>
+                        <input type="number" class="form-control" name="Longitude" required autocomplete="off"
+                            id="Longitude" placeholder="Longitude" value="{{ Longitude }}" disabled>
+                        <label for="Longitude" class="text-secondary">Longitude</label>
+                    </div>
+                    <!-- Latitude -->
+                    <div class="form-floating mb-3" hidden>
+                        <input type="number" class="form-control" name="Latitude" required autocomplete="off" id="Latitude"
+                            placeholder="Latitude" value="{{ Latitude }}" disabled>
+                        <label for="Latitude" class="text-secondary">Latitude</label>
+                    </div>
                 {% endif %}
                 <!-- Stateless form entries-->
                 <!-- Address -->
@@ -63,7 +111,6 @@
                     <input type="text" class="form-control" name="AutoAddress" required autocomplete="off"
                         id="AutoAddress" placeholder="333 North St">
                     <label for="AutoAddress" class="text-secondary">Address</label>
-
                 </div>
                 <!-- room type -->
                 <div class="form-floating mb-3">
@@ -89,8 +136,6 @@
                     <span id="AccommodatesSpan" class="text-primary">0</span>
                 </div>
             </div>
-
-
             <div class="col-md mb-0">
                 <h3 class="text-dark text-start mb-3">Host and Reviews Info</h3>
                 <!-- Host Response Time -->
@@ -110,7 +155,6 @@
                     <label for="ReviewScore" class="form-label text-dark">Overall Review Score: </label>
                     <span id="ReviewScoreSpan" class="text-primary">0</span>
                 </div>
-
                 <!--  Longitude -->
                 <div class="form-floating mb-3" hidden>
                     <input type="number" class="form-control" name="Longitude" required autocomplete="off"
@@ -127,13 +171,7 @@
                     <button class="btn btn-danger btn-lg" style="width:100%;" type="submit">Submit</button>
                 </div>
             </div>
-
-
         </div>
-        <!-- <div>
-                <button class="btn btn-danger btn-lg" style="width:100%;" type="submit">Submit</button>
-            </div> -->
-
     </div>
 </form>
 </section>

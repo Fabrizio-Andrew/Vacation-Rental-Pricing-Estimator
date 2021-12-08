@@ -29,4 +29,4 @@ class Property(db.Model):
     Longitude = db.Column(db.Float, nullable=False)
     Latitude = db.Column(db.Float, nullable=False)
     ReviewScore = db.Column(db.Float, nullable=False)
-    user = db.Column(db.Integer, db.ForeignKey('User.uid'), nullable = False)
+    user = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable = False)

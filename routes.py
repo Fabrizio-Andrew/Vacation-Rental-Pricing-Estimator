@@ -288,9 +288,10 @@ def results_page():
     else:
         return render_template('401.html'), 401
 
-@app.route('/save')
+@app.route('/save', methods=['POST'])
 @login_required
 def save_result():
+    # Construct the Property object from form submission
     prop = models.Property(address=request.form['AutoAddress'],
                                 HostResponseTime=int(request.form['HostResponseTime']),
                                 RoomType=int(request.form['RoomType']),
@@ -299,10 +300,26 @@ def save_result():
                                 Longitude=float(request.form['Longitude']),
                                 Latitude=float(request.form['Latitude']),
                                 ReviewScore=float(request.form['ReviewScore']),
-                                user=int(session['user_id']))
+                                user=int(session['_user_id']))
+    
+    # Commit the property object to DB
     db.session.add(prop)
     db.session.commit()
-    return render_template('/', message='<div class="alert alert-success" role="alert">Entry saved!</div>')
+
+    # Propagate form data from request
+    return render_template('index.html', 
+                            title='Home',
+                            GoogleApiKey=app.config['GOOGLE_API_KEY'], 
+                            cache=True,
+                            AutoAddress=request.form['AutoAddress'],
+                            HostResponseTime=int(request.form['HostResponseTime']),
+                            RoomType=int(request.form['RoomType']),
+                            Beds=int(request.form['Beds']),
+                            Accommodates=int(request.form['Accommodates']),
+                            Longitude=float(request.form['Longitude']),
+                            Latitude=float(request.form['Latitude']),
+                            ReviewScore=float(request.form['ReviewScore']),
+                            message='<div class="alert alert-success" role="alert">Entry saved!</div>')
 
 
 @app.errorhandler(404)

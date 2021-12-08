@@ -9,6 +9,9 @@
             <div class="d-sm-flex col-lg-6 align-items-center justify-content-between">
                 <div>
                     <h1 class="mb-4">Vacation Rental <span class="text-warning">Pricing Helper</span></h1>
+                    {% if message %}
+                    {{ message | safe }} 
+                    {% endif %}
                     <p class="lead ">
                         This is a great tool to help <b class="">property owners</b> to <mark class="">calculate the
                             pricing</mark> of a
@@ -249,7 +252,7 @@
 
 <!-- Google Places API has been restricted to Specified Heroku app url -->
 <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3ufBrDDLSZUlA7LZfQcOGcUvlgL9KeUE&callback=initAutocomplete&libraries=places&v=weekly">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-VcjZGTxzpns8rRKON1LAsuXnO3-Y8Mw&callback=initAutocomplete&libraries=places&v=weekly">
 </script>
 
 <!-- Google Places Autocomplete -->

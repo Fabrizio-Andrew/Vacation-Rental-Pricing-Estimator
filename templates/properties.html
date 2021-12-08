@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container" style="padding-top: 10px; min-height: 500px;">
+
+    <h2>Your Properties</h2>
+    {% for prop in properties %}
+    <hr>
+    <form action="/results_page" method="Post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="AutoAddress" value='{{ prop.address }}'>
+        <input type="hidden" name="Beds" value='{{ prop.Beds }}'>
+        <input type="hidden" name="Accommodates" value='{{ prop.Accommodates }}'>
+        <input type="hidden" name="ReviewScore" value='{{ prop.ReviewScore }}'>
+        <input type="hidden" name="HostResponseTime" value='{{ prop.HostResponseTime }}'>
+        <input type="hidden" name="RoomType" value='{{ prop.RoomType }}'>
+        <input type="hidden" name="Longitude" value='{{ prop.Longitude }}'>
+        <input type="hidden" name="Latitude" value='{{ prop.Latitude }}'>
+        <div class="row">
+            <div class="col-md" style="display: table;">
+                <span style="display: table-cell; vertical-align: middle;">
+                    <strong>{{ prop.address }}</strong>
+                </span>
+            </div>
+            <div class="col-md">
+                <button id="submitButton" class="btn btn-danger btn-lg" type="submit">Go</button>
+            </div>
+        </div> 
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}

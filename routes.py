@@ -136,14 +136,14 @@ def password_validation(password):
         return True
     return False
 
-#@app.route('/profile', methods=['GET', 'POST'])
-#@login_required
-#def profile():
-#    if 'user_id' in session:
-#        user = models.User.query.filter_by(uid=session['user_id']).first()
-#        if user:
-#            return render_template('profile.html', 
-#                                    email=user.email)
+@app.route('/properties', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if '_user_id' in session:
+        user = models.User.query.filter_by(uid=session['_user_id']).first()
+        props = models.Property.query.filter_by(user=session['_user_id']).all()
+        if user:
+            return render_template('properties.html', properties=props)
 
 
 

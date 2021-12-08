@@ -54,6 +54,9 @@
                         <a href="/insights" class="nav-link">Insights</a>
                     </li>
                     {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="/properties" class="nav-link">My Properties</a>
+                    </li>
 
                     <li class="nav-item">
                         <a href="#" class=" nav-link text-white">{{ current_user.email }}</a>
@@ -63,7 +66,7 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="/login" class="btn btn-primary">Login</a>
+                        <a href="/login" class="btn btn-primary" style="margin-right: 8px;">Login</a>
                     </li>
                     <li class="nav-item">
                         <a href="/signup" class="btn btn-warning text-white">Sign Up</a>

@@ -150,18 +150,20 @@ def password_validation(password):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if 'user_submission' not in session:
-        return render_template('index.html', title="Home")
+        return render_template('index.html', title="Home", GoogleApiKey=app.config['GOOGLE_API_KEY'])
+    submission = session['user_submission']
     return render_template('index.html', 
-                            title='Home', 
+                            title='Home',
+                            GoogleApiKey=app.config['GOOGLE_API_KEY'], 
                             cache=True,
-                            AutoAddress=session['user_submission']['AutoAddress'],
-                            HostResponseTime=session['user_submission']['HostResponseTime'],
-                            RoomType=session['user_submission']['RoomType'],
-                            Beds=session['user_submission']['Beds'],
-                            Accomodates=session['user_submission']['Accomodates'],
-                            Longitude=session['user_submission']['Longitude'],
-                            Latitude=session['user_submission']['Latitude'],
-                            ReviewScore=session['user_submission']['ReviewScore']
+                            AutoAddress=submission['AutoAddress'],
+                            HostResponseTime=submission['HostResponseTime'],
+                            RoomType=submission['RoomType'],
+                            Beds=submission['Beds'],
+                            Accommodates=submission['Accommodates'],
+                            Longitude=submission['Longitude'],
+                            Latitude=submission['Latitude'],
+                            ReviewScore=submission['ReviewScore']
                             )
 
 

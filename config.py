@@ -24,6 +24,9 @@ if os.path.exists('secrets.json'):
     os.environ['DB_HOST_PORT'] = secrets['DB_HOST_PORT']
     os.environ['DB_NAME'] = secrets['DB_NAME']
 
+    # Google API Settings
+    os.environ['GOOGLE_API_KEY'] = secrets['GOOGLE_API_KEY']
+
 
 # General configuration settings
 class Config(object):
@@ -43,3 +46,7 @@ class Config(object):
         database=os.environ.get('DB_NAME')
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Google API Settings
+    GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+

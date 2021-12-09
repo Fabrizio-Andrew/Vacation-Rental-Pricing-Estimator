@@ -9,7 +9,7 @@ for Data Analysis
 
 **Members**: Andrew Fabrizio, Joe Pursel, Jing Yu
 
-**App URL:** https://vacation-group.herokuapp.com
+**App URL:** https://immense-mountain-68865.herokuapp.com/
 
 **Screencast URL**: https://www.youtube.com/watch?v=c7xJrOAaWOs
 

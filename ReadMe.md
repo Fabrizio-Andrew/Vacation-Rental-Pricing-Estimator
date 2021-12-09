@@ -11,6 +11,8 @@ for Data Analysis
 
 **App URL:** https://immense-mountain-68865.herokuapp.com/
 
+**GitHub URL:** https://github.com/Fabrizio-Andrew/Vacation-Rental-Pricing-Estimator
+
 **Screencast URL**: https://www.youtube.com/watch?v=c7xJrOAaWOs
 
 **Project code download, with SQL dump**: https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/VacationGroup.zip

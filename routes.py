@@ -36,17 +36,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',
 )
 
-# production_db_uri1 = environ.get('HEROKU_POSTGRESQL_WHITE_URL').replace("postgres://", "postgresql://")
-# production_db_uri0 = environ.get('DATABASE_URL').replace("postgres://", "postgresql://")
-# app.secret_key = os.environ.get('SECRET_KEY')
-# app.config['SQLALCHEMY_DATABASE_URI'] = production_db_uri0
 
-# DATABASE_URI_NEW = environ.get('HEROKU_POSTGRESQL_WHITE_URL').replace("postgres://", "postgresql://")
-# "postgresql://dbudyqehphowvj:ce19f33d1898777e99ec500d4651375b6deb8f98bb8d4caa5a3254e97126e527@ec2-34-198-189-252.compute-1.amazonaws.com:5432/d1gel5ia1af8fe"
-
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI_NEW
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 app.secret_key = app.config['SECRET_KEY']
 login_manager = LoginManager()
@@ -85,8 +75,7 @@ def login():
         user = models.User.query.filter_by(email=request.form['email']).first()
         if user:
             if sha256.verify(request.form['password'], user.password):
-                login_user(user) # remember=True, duration=datetime.timedelta(days=1)
-                # remember = request.form['remember']
+                login_user(user) 
                 return redirect(url_for('index'))
             else:
                 return render_template('login.html', message='Wrong email or password!')
@@ -114,11 +103,7 @@ def signup():
             else:
                 return render_template('signup.html',
                 message='''<div class="alert alert-warning" role="alert">Password must contain 6-20 characters, one uppercase letter, one lowercase letter, one number and one special character</div>''')
-            # if email_validation(email):
-            #     pass
-            # else:
-            #     return render_template('signup.html',
-            #     message='''<div class="alert alert-warning" role="alert">Email Invalid!</div>''')
+
             user = models.User(email=email, password=sha256.hash(password))
             db.session.add(user)
             db.session.commit()
@@ -175,8 +160,7 @@ def about():
 @app.route('/results_page', methods=['GET', 'POST'])
 def results_page():
     if request.method == 'POST':
-        # HostResponseTime 0hour 1hours 2day 3days 
-        # RoomType 0private 1 hotel 2 shared 3 entire
+
         RoomTypeMap={0:"a Private Room", 1:"a Hotel Room", 2:"a Shared Room", 3:"an Entire Home/Apt"}
         HostResponseTimeMap = {0:"Within an Hour", 1:"Within a few Hours", 2:"Within a Day",3:"A Few Days or More" }
         
@@ -186,7 +170,6 @@ def results_page():
         Accommodates = int(request.form['Accommodates'])
         Longitude = float(request.form['Longitude'])
         Latitude = float(request.form['Latitude'])
-        # place_id = request.form['place_id']
         ReviewScore = float(request.form['ReviewScore'])
 
         user_submission = {"AutoAddress":request.form['AutoAddress'],"HostResponseTime": HostResponseTime, "RoomType": RoomType,
@@ -231,21 +214,7 @@ def results_page():
             'Response Within a Few Hours', # binary
             '# of Beds',
             'Accommodates']
-        # zipped_label_weight = []
-            # for i, d in enumerate(model_input):
-            #     if(d!=0):
-            #         zipped_label_weight.append((features[i],list(coefs)[i]))
-            #         zipped_label_weight.sort(key=lambda x: x[1], reverse=True)
-            # chart_labels = [x[0] for x in zipped_label_weight]
-            # chart_weights_data = [x[1] for x in zipped_label_weight]
-            # positive_color = 'rgba(255, 99, 132, 1)'
-            # negative_color = 'rgba(54, 162, 235, 1)'
-            # chart_colors=[]
-            # for i in chart_weights_data:
-            #     if(i>0):
-            #         chart_colors.append(positive_color)
-            #     else:
-            #         chart_colors.append(negative_color)
+
 
         # get labels and weights and logic for Contributing Factors chart
         zipped_label_weight = []
@@ -267,7 +236,6 @@ def results_page():
         # Persist user entry data in session
         session['user_submission'] = user_submission
 
-        # if time permits; present and do word cloud data
 
         return render_template('results_page.html', title="Results",
             closest_landmarks_list=closest_landmarks_list,
@@ -338,23 +306,13 @@ def insights():
 @app.route('/query')
 def queryDatabase():
     # https://realpython.com/prevent-python-sql-injection/
-    # db_query = create_engine(DATABASE_URI_NEW)
     initial_query = "SELECT * FROM listings_postgres_clone3 "
     neighbourhood  = request.args.get('neighbourhood', None)
+
     # strip quotes from neighbourhood
     superhost  = request.args.get('superhost', None)
     response_rate = request.args.get('response_rate', None)
     host_years = request.args.get('host_years', None)
-
-    # room_type  = request.args.get('room_type', None)
-    # min_price  = request.args.get('min_price', None)
-    # max_price  = request.args.get('max_price', None)
-    # min_beds  = request.args.get('min_beds', None)
-    # max_beds  = request.args.get('max_beds', None)
-    # min_accommodates  = request.args.get('min_accommodates', None)
-    # max_accommodates  = request.args.get('max_accommodates', None)
-    # min_review_scores_rating  = request.args.get('min_review_scores_rating', None)
-    # max_review_scores_rating  = request.args.get('max_review_scores_rating', None) 
 
     all_criteria = [neighbourhood, superhost, response_rate, host_years]
     # all_criteria is not None

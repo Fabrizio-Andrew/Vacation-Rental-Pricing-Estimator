@@ -15,13 +15,104 @@ for Data Analysis
 
 **Project code download, with SQL dump**: https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/VacationGroup.zip
 
-# Table of Contents
-
-[TOC]
 
 
+# Vacation Rental Pricing Helper
 
-## Vacation Rental Pricing Helper
+## Getting Started - Local dev
+
+### Prerequisites
+* Install Python 3 + pip
+
+* Create a virtualenv and install dependencies
+```bash
+# Create virtual environment
+$ python venv venv
+# Install Dependencies
+$ pip install -r requirements.txt
+```
+
+* Create secrets.json file
+```bash
+{
+    "SECRET_KEY": "<YOUR_SECRET_KEY>",
+    "DB_HOST": "localhost",
+    "DB_HOST_PORT": "5432",
+    "DB_USER": "<YOUR_USERNAME>",
+    "DB_PASSWORD": "<YOUR_PASSWORD>",
+    "DB_NAME": "postgres",
+    "GOOGLE_API_KEY": "<YOUR_KEY"
+}
+```
+### Setup DB
+
+* Create postgres db in Docker
+```bash
+docker compose up
+```
+
+* Configure db
+```bash
+$ flask db init #(maybe not needed)
+$ flask db stamp head
+$ flask db migrate
+$ flask db upgrade
+```
+
+NOTE: The DB will not have the required data to support the "Insights" tab.
+
+
+## Getting Started - Heroku
+(see https://devcenter.heroku.com/articles/creating-apps)
+
+### Prerequisites
+
+* Heroku CLI
+(for macOS)
+```bash
+$ brew tap heroku/brew && brew install heroku
+```
+
+### Build & deploy
+
+* Log in to Heroku
+```bash
+$ heroku login
+```
+
+* Create a Heroku app
+```bash
+$ heroku create
+```
+
+* Deploy to Heroku
+```bash
+$ git push heroku main
+```
+
+* Configure Env Variables
+
+An environment variable must be set in Heroku for each of the values in secrets.json.
+
+### Set up the Heroku DB
+
+* Create the DB
+```bash
+heroku addons:create heroku-postgresql:hobby-dev
+```
+
+* Configure the DB
+```bash
+$ heroku run flask db init #(maybe not needed)
+$ heroku run flask db stamp head
+$ heroku run flask db migrate
+$ heroku run flask db upgrade
+```
+
+NOTE: The DB will not have the required data to support the "Insights" tab.
+
+
+## App Overview
 
 ### Motivation
 
@@ -30,8 +121,6 @@ Property owners renting out on a short-term basis (hosts) often have little expe
 The Vacation Rental Pricing Helper will provide hosts with a baseline prediction of the fair market value of their short-term rental based on location, property features, date, and any other predictors that the team finds to be meaningful. In addition, hosts will be provided with key data insights from listings data, alongside processed natural language insights. Armed with such information, hosts will be better prepared to accurately price their short-term rentals.
 
 
-
-### App Overview
 
 #### Homepage
 

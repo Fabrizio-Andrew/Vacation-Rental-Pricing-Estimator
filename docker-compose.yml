@@ -1,9 +1,17 @@
 version: '3.4'
 
 services:
+  vacationrentalpricingestimator:
+    image: vacationrentalpricingestimator
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000
   db:
     image: "postgres:12"
     ports:
       - "5432:5432"
     environment:
+      POSTGRES_USER: vacationpostgres
       POSTGRES_PASSWORD: vacationpostgres

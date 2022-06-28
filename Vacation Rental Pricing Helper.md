@@ -57,7 +57,7 @@ On the insights page, user can explore the dataset at will with a range of filte
 
 ### Security
 
-\- CRSF protection is enabled.
+\- CSRF protection is enabled.
 
 \- Cookies protection
 

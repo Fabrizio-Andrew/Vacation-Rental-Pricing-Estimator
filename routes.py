@@ -46,6 +46,8 @@ db_query = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
 sites_data_path = "data/sites_boston.csv"
 subway_data_path = "data/transport/subway.json"
+
+# Linear Regression coefficients
 coefs=np.array([-0.18180501, -0.32107893, -0.36701204, -0.15250934, -0.05541475,
        -0.03938244,  0.55789099,  0.01080494,  0.10483031,  0.25154944,
         0.39175801])
@@ -199,6 +201,7 @@ def results_page():
         model_input[9] = (Beds - all_means['beds'] )/all_stds['beds']
         model_input[10] = (Accommodates - all_means['accommodates'] )/all_stds['accommodates']
         model_output = np.dot(model_input,coefs) + bias
+        # The Prediction
         model_output = model_output*all_stds['price'] + all_means['price']
 
 

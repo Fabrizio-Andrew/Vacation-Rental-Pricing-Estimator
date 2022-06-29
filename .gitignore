@@ -2,3 +2,5 @@
 venv/
 secrets.json
 .vscode/
+TODO
+.DS_Store

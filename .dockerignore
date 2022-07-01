@@ -24,3 +24,6 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 README.md
+experimentation/
+/NLP_Notebook_and_data
+.vscode/

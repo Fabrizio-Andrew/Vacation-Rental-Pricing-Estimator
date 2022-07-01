@@ -61,8 +61,11 @@ $ flask db migrate
 $ flask db upgrade
 ```
 
-NOTE: The DB will not have the required data to support the "Insights" tab.
-
+* Seed db
+```bash
+$ psql -h 192.168.1.235 -p 5432 -U vacationpostgres -d postgres -a -f /Users/Andrew/Vacation-Rental-Pricing-Estimator/seed_data/seed_SQL_reviews.txt
+$ psql -h 192.168.1.235 -p 5432 -U vacationpostgres -d postgres -a -f /Users/Andrew/Vacation-Rental-Pricing-Estimator/seed_data/seed_SQL_reviews.txt
+```
 
 ## Getting Started - Heroku
 (see https://devcenter.heroku.com/articles/creating-apps)

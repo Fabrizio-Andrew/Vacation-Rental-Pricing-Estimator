@@ -1,5 +1,5 @@
 from flask import Flask, make_response,render_template, request, redirect, url_for, flash, jsonify, send_file,send_from_directory, session
-from flask_wtf.csrf import CSRFProtect
+# from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import geopy.distance
 import pandas as pd
@@ -26,8 +26,8 @@ import models
 migrate = Migrate()
 migrate.init_app(app, db)
 
-csrf = CSRFProtect()
-csrf.init_app(app)
+# csrf = CSRFProtect()
+# csrf.init_app(app)
 app.config['CUSTOM_STATIC_PATH'] = app.root_path + '/data/'
 # app.config['WTF_CSRF_TIME_LIMIT'] = None
 app.config.update(

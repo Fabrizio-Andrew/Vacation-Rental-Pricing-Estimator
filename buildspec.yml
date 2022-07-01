@@ -13,4 +13,6 @@ phases:
   build:
     commands:
       - docker build -t vacationrentalpricingestimator .
-      - echo "Success!" 
+      - echo "Success!"
+  artifacts:
+    files: imagedefinitions.json

@@ -494,7 +494,6 @@
         var unique_listing_ids = d3.rollup(data, v => v.length, d => d.id)
         var unique_listing_ids_list = Array.from(unique_listing_ids.keys());
         // send post request 
-        //var csrf_token = '{{ csrf_token() | string }}';
         d3.json('/query_reviews', {
         method:"POST",
         body: JSON.stringify({
@@ -502,7 +501,6 @@
         }),
         headers: {
             "Content-type": "application/json; charset=UTF-8"
-            //'X-CSRF-Token': csrf_token,
         }
         })
         .then(function(data){

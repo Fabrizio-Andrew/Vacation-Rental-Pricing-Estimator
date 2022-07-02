@@ -40,7 +40,6 @@
                     <!-- Property Save Form-->
                     {% if current_user.is_authenticated %}
                     <form action="/save" method="Post">
-                      <!--<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">-->
                       <input type="hidden" name="AutoAddress" value='{{ user_submission.AutoAddress }}'>
                       <input type="hidden" name="Beds" value='{{ user_submission.Beds }}'>
                       <input type="hidden" name="Accommodates" value='{{ user_submission.Accommodates }}'>

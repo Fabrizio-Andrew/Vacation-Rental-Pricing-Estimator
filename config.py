@@ -27,6 +27,10 @@ if os.path.exists('secrets.json'):
     # Google API Settings
     os.environ['GOOGLE_API_KEY'] = secrets['GOOGLE_API_KEY']
 
+    # SageMaker Settings
+    os.environ['AWS_DEFAULT_REGION'] = secrets['AWS_DEFAULT_REGION']
+    os.environ['SAGEMAKER_MODEL_NAME'] = secrets['SAGEMAKER_MODEL_NAME']
+
 
 # General configuration settings
 class Config(object):

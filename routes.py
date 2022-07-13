@@ -12,6 +12,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 import config
 from flask_migrate import Migrate
+import invoke_sagemaker
 
 
 app = Flask(__name__)
@@ -200,8 +201,13 @@ def results_page():
         model_input[7] = (ReviewScore - all_means['review_scores_rating'] )/all_stds['review_scores_rating']
         model_input[9] = (Beds - all_means['beds'] )/all_stds['beds']
         model_input[10] = (Accommodates - all_means['accommodates'] )/all_stds['accommodates']
-        model_output = np.dot(model_input,coefs) + bias
-        # The Prediction
+
+        # Make a prediction
+        if 'SAGEMAKER_MODEL_NAME' in os.environ:
+            model_output = invoke_sagemaker.invoke_model(model_input)
+        else:
+            model_output = np.dot(model_input,coefs) + bias
+
         model_output = model_output*all_stds['price'] + all_means['price']
 
 

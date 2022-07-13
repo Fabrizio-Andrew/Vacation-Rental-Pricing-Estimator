@@ -9,13 +9,9 @@ for Data Analysis
 
 **Members**: Andrew Fabrizio, Joe Pursel, Jing Yu
 
-**App URL:** https://immense-mountain-68865.herokuapp.com/
+**App URL:** http://vacationrentalpricingestimator-env.eba-prrnubz9.us-west-2.elasticbeanstalk.com/
 
 **GitHub URL:** https://github.com/Fabrizio-Andrew/Vacation-Rental-Pricing-Estimator
-
-**Screencast URL**: https://www.youtube.com/watch?v=c7xJrOAaWOs
-
-**Project code download, with SQL dump**: https://myimagesjingyu.s3.us-west-2.amazonaws.com/upic/VacationGroup.zip
 
 
 
@@ -114,7 +110,35 @@ $ heroku run flask db migrate
 $ heroku run flask db upgrade
 ```
 
-NOTE: The DB will not have the required data to support the "Insights" tab.
+NOTE: The DB will not have the required data to support the "Insights" tab.  This is due to Heroku service limits.
+
+## AWS Environment
+
+* Elastic Beanstalk
+
+GH Actions for this repo is configured to deploy to AWS Elastic Beanstalk.  (The version number must be incremented in /.github/workflows/beanstalk_deploy.yml or the build will fail.)
+
+* SageMaker Model
+
+See https://github.com/Fabrizio-Andrew/Vacation-Rental-Model for details on deploying/updating prediction model.
+
+* Relational Database Service (RDS)
+
+Once an RDS instance is established in AWS, the db can be configured and seeded just as a local db would (depending on security settings.)
+
+* Configure db
+```bash
+$ flask db init #(maybe not needed)
+$ flask db stamp head
+$ flask db migrate
+$ flask db upgrade
+```
+
+* Seed db
+```bash
+$ psql -h <IP ADDRESS> -p 5432 -U <USERNAME> -d postgres -a -f /path/to/seed_data/seed_SQL_reviews.txt
+$ psql -h <IP ADDRESS> -p 5432 -U <USERNAME> -d postgres -a -f /path/to/seed_SQL_reviews.txt
+```
 
 
 ## App Overview

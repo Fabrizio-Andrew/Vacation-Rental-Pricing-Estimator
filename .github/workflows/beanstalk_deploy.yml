@@ -22,6 +22,6 @@ jobs:
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         application_name: vacation-rental-pricing-estimator
         environment_name: Vacationrentalpricingestimator-env
-        version_label: 7
+        version_label: 8
         region: us-west-2
         deployment_package: deploy.zip
